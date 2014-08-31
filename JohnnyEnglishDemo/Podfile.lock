@@ -1,0 +1,17 @@
+PODS:
+  - Aspects (1.4.1)
+  - JohnnyEnglish (0.0.1):
+    - Aspects (~> 1.4.1)
+
+DEPENDENCIES:
+  - JohnnyEnglish (from `../`)
+
+EXTERNAL SOURCES:
+  JohnnyEnglish:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Aspects: a6368eba05295b24ffe0e9acfb9080cc3b0f4b5f
+  JohnnyEnglish: bf99d6f1c0e9bcf6493dca8a93602e93ea00a56c
+
+COCOAPODS: 0.33.1

@@ -11,9 +11,7 @@
 #import "CTXUserActivityTrackerProtocol.h"
 #import "CTXUserActivityButtonPressedEvent.h"
 
-#import "CTXLog.h"
-
-#import "AOPAspect.h"
+#import "Aspects.h"
 
 static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedScreens        = @"trackedScreens";
 static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEvents         = @"trackedEvents";
@@ -37,7 +35,7 @@ static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventLa
 
 - (instancetype)init
 {
-    if ((self = [super init])) {
+    if (self = [super init]) {
         _trackers = [NSMutableArray array];
         _workingQueue = dispatch_queue_create("com.ef.ctx.framework.userActivityTrackingManager.workingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
@@ -51,39 +49,37 @@ static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventLa
         
         Class clazz = NSClassFromString(trackedScreen[CTXUserActivityTrackingManagerConfigurationTrackedClass]);
 
-        [[AOPAspect instance] interceptClass:clazz
-                      afterExecutingSelector:@selector(viewDidAppear:)
-                                  usingBlock:^(NSInvocation *invocation) {
-            dispatch_async(_workingQueue, ^{
-                NSString *viewName = trackedScreen[CTXUserActivityTrackingManagerConfigurationTrackedScreenName];
-                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                    [tracker trackScreenHitWithName:viewName];
-                }
-                
-                CTXLogInfo(CTXLogContextAppTrace, @"[Tracking] view from class %@ has been shown.", clazz);
-            });
-        }];
-        
+        NSError *error = nil;
+        [clazz aspect_hookSelector:@selector(viewDidAppear:)
+                       withOptions:AspectPositionAfter
+                        usingBlock:^(id<AspectInfo> invocation) {
+                            dispatch_async(_workingQueue, ^{
+                                NSString *viewName = trackedScreen[CTXUserActivityTrackingManagerConfigurationTrackedScreenName];
+                                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                                    [tracker trackScreenHitWithName:viewName];
+                                }
+                            });
+                        }
+                             error:&error];
     }
     
     for (NSDictionary *trackedEvents in configuration[CTXUserActivityTrackingManagerConfigurationTrackedEvents]) {
         
         Class clazz = NSClassFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedClass]);
         SEL selektor = NSSelectorFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedEventSelector]);
-        
-        [[AOPAspect instance] interceptClass:clazz
-                      afterExecutingSelector:selektor
-                                  usingBlock:^(NSInvocation *invocation) {
-            dispatch_async(_workingQueue, ^{
-                CTXUserActivityButtonPressedEvent *buttonPressEvent = [CTXUserActivityButtonPressedEvent eventWithLabel:trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedEventLabel]];
-                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                    [tracker trackEvent:buttonPressEvent];
-                }
-                
-                CTXLogInfo(CTXLogContextAppTrace, @"[Tracking] method %@ from class %@ has been called.", NSStringFromSelector(selektor), clazz);
-            });
-        }];
-        
+
+        NSError *error = nil;
+        [clazz aspect_hookSelector:selektor
+                       withOptions:AspectPositionBefore
+                        usingBlock:^(id<AspectInfo> invocation) {
+                            dispatch_async(_workingQueue, ^{
+                                CTXUserActivityButtonPressedEvent *buttonPressEvent = [CTXUserActivityButtonPressedEvent eventWithLabel:trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedEventLabel]];
+                                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                                    [tracker trackEvent:buttonPressEvent];
+                                }
+                            });
+                        }
+                             error:&error];
     }
 }
 

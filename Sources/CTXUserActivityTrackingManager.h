@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CTXUserActivityTrackerProtocol.h"
+
+@protocol CTXUserActivityTrackerProtocol;
 
 @interface CTXUserActivityTrackingManager : NSObject
 
