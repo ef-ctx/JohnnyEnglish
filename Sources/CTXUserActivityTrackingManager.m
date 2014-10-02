@@ -13,12 +13,12 @@
 
 #import "Aspects.h"
 
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedScreens        = @"trackedScreens";
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEvents         = @"trackedEvents";
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedClass          = @"class";
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedScreenName     = @"screenName";
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventSelector  = @"selector";
-static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventLabel     = @"label";
+static NSString *const CTXUserActivityTrackingManagerConfigurationScreens = @"trackedScreens";
+static NSString *const CTXUserActivityTrackingManagerConfigurationEvents = @"trackedEvents";
+static NSString *const CTXUserActivityTrackingManagerConfigurationClass = @"class";
+static NSString *const CTXUserActivityTrackingManagerConfigurationScreenName = @"screenName";
+static NSString *const CTXUserActivityTrackingManagerConfigurationEventSelector = @"selector";
+static NSString *const CTXUserActivityTrackingManagerConfigurationEventLabel = @"label";
 
 
 @interface CTXUserActivityTrackingManager ()
@@ -45,16 +45,16 @@ static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventLa
 
 - (void)setupWithConfiguration:(NSDictionary *)configuration
 {
-    for (NSDictionary *trackedScreen in configuration[CTXUserActivityTrackingManagerConfigurationTrackedScreens]) {
+    for (NSDictionary *trackedScreen in configuration[CTXUserActivityTrackingManagerConfigurationScreens]) {
         
-        Class clazz = NSClassFromString(trackedScreen[CTXUserActivityTrackingManagerConfigurationTrackedClass]);
+        Class clazz = NSClassFromString(trackedScreen[CTXUserActivityTrackingManagerConfigurationClass]);
 
         NSError *error = nil;
         [clazz aspect_hookSelector:@selector(viewDidAppear:)
                        withOptions:AspectPositionAfter
                         usingBlock:^(id<AspectInfo> invocation) {
                             dispatch_async(_workingQueue, ^{
-                                NSString *viewName = trackedScreen[CTXUserActivityTrackingManagerConfigurationTrackedScreenName];
+                                NSString *viewName = trackedScreen[CTXUserActivityTrackingManagerConfigurationScreenName];
                                 for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                     [tracker trackScreenHitWithName:viewName];
                                 }
@@ -63,17 +63,17 @@ static NSString *const CTXUserActivityTrackingManagerConfigurationTrackedEventLa
                              error:&error];
     }
     
-    for (NSDictionary *trackedEvents in configuration[CTXUserActivityTrackingManagerConfigurationTrackedEvents]) {
+    for (NSDictionary *trackedEvents in configuration[CTXUserActivityTrackingManagerConfigurationEvents]) {
         
-        Class clazz = NSClassFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedClass]);
-        SEL selektor = NSSelectorFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedEventSelector]);
+        Class clazz = NSClassFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationClass]);
+        SEL selektor = NSSelectorFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationEventSelector]);
 
         NSError *error = nil;
         [clazz aspect_hookSelector:selektor
                        withOptions:AspectPositionBefore
                         usingBlock:^(id<AspectInfo> invocation) {
                             dispatch_async(_workingQueue, ^{
-                                CTXUserActivityButtonPressedEvent *buttonPressEvent = [CTXUserActivityButtonPressedEvent eventWithLabel:trackedEvents[CTXUserActivityTrackingManagerConfigurationTrackedEventLabel]];
+                                CTXUserActivityButtonPressedEvent *buttonPressEvent = [CTXUserActivityButtonPressedEvent eventWithLabel:trackedEvents[CTXUserActivityTrackingManagerConfigurationEventLabel]];
                                 for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                     [tracker trackEvent:buttonPressEvent];
                                 }
