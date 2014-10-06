@@ -1,9 +1,10 @@
 //
 //  CTXUserActivityTrackingManager.m
-//  CTXFramework
+//  JohnnyEnglish
 //
 //  Created by Alberto De Bortoli on 29/01/2014.
-//  Copyright (c) 2014 EF. All rights reserved.
+//  Copyright (c) 2014 EF CTX. All rights reserved.
+//  Licensed under the MIT license.
 //
 
 #import "CTXUserActivityTrackingManager.h"
@@ -44,7 +45,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     if (self = [super init]) {
         _trackers = [NSMutableArray array];
         _timerTrackers = [NSMutableDictionary dictionary];
-        _workingQueue = dispatch_queue_create("com.ef.ctx.framework.userActivityTrackingManager.workingQueue", DISPATCH_QUEUE_CONCURRENT);
+        _workingQueue = dispatch_queue_create("com.ef.ctx.user-activity-tracking-manager", DISPATCH_QUEUE_CONCURRENT);
     }
     
     return self;

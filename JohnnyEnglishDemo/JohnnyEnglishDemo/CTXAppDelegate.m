@@ -1,9 +1,10 @@
 //
 //  CTXAppDelegate.m
-//  JohnnyEnglishDemo
+//  JohnnyEnglish
 //
 //  Created by Dmitry Makarenko on 31/08/2014.
-//  Copyright (c) 2014 EF Education First. All rights reserved.
+//  Copyright (c) 2014 EF CTX. All rights reserved.
+//  Licensed under the MIT license.
 //
 
 #import "CTXAppDelegate.h"
