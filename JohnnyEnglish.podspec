@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.dependency 'Aspects',     '~>1.4.1'
 
   s.platform     = :ios
-  s.ios.deployment_target = '7.1'
+  s.ios.deployment_target = '7.0'
   s.requires_arc = true
   
   s.source   = { :git => 'git@github.com:ef-ctx/JohnnyEnglish.git', :tag => "#{s.version}" }
