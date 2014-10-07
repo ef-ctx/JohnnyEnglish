@@ -12,7 +12,7 @@
 #import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
 #import <GoogleAnalytics-iOS-SDK/GAIFields.h>
 
-#define kTrackerDispatchInterval 120
+static NSUInteger const kTrackerDispatchInterval 120
 
 @interface CTXGATracker()
 
@@ -22,7 +22,7 @@
 
 @implementation CTXGATracker
 
-- (id)initWithTrackingId:(NSString *)trackingId
+- (instancetype)initWithTrackingId:(NSString *)trackingId
 {
     if (self = [super init]) {
         [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
