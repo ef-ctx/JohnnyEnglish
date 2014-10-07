@@ -10,26 +10,19 @@
 #import "CTXUserActivityTrackingManager.h"
 
 #import "CTXUserActivityTrackerProtocol.h"
-#import "CTXUserActivityButtonPressedEvent.h"
+
+#import "CTXUserActivityEvent.h"
+#import "CTXUserActivityTiming.h"
+#import "CTXUserActivityScreenHit.h"
 
 #import "Aspects.h"
-
-//static NSString *const CTXUserActivityTrackingManagerConfigurationScreens = @"trackedScreens";
-//static NSString *const CTXUserActivityTrackingManagerConfigurationEvents = @"trackedEvents";
-//static NSString *const CTXUserActivityTrackingManagerConfigurationClass = @"class";
-//static NSString *const CTXUserActivityTrackingManagerConfigurationScreenName = @"screenName";
-//static NSString *const CTXUserActivityTrackingManagerConfigurationEventSelector = @"selector";
-//static NSString *const CTXUserActivityTrackingManagerConfigurationEventLabel = @"label";
 
 static NSString *const CTXTrackTimerStartDate           = @"startTimer";
 static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
 
-
-
 @interface CTXUserActivityTrackingManager ()
 
 @property (nonatomic, strong) NSMutableArray *trackers;
-
 @property (nonatomic, strong) NSMutableDictionary *timerTrackers;
 
 @end
@@ -51,21 +44,63 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     return self;
 }
 
-- (void)registerScreenTrackerFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError *)error
+- (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))userIdCallback error:(NSError **)error
+{
+    [clazz aspect_hookSelector:selektor
+                   withOptions:AspectPositionAfter
+                    usingBlock:^(id<AspectInfo> invocation) {
+                        dispatch_async(_workingQueue, ^{
+                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                                [tracker trackUserId:userIdCallback((id<CTXMethodCallInfo>) invocation)];
+                            }
+                        });
+                    }
+                         error:error];
+}
+
+- (void)registerStartSessionFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError **)error
 {
     [clazz aspect_hookSelector:@selector(viewDidAppear:)
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> invocation) {
                         dispatch_async(_workingQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                                [tracker trackScreenHitWithName:screenName];
+                                [tracker startSessionWithScreenHit:screenName];
                             }
                         });
                     }
-                         error:&error];
+                         error:error];
 }
 
-- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor event:(id<CTXUserActivityEventProtocol>)event error:(NSError *)error
+- (void)registerStopSessionFromClass:(Class)clazz selector:(SEL)selektor error:(NSError **)error
+{
+    [clazz aspect_hookSelector:selektor
+                   withOptions:AspectPositionAfter
+                    usingBlock:^(id<AspectInfo> invocation) {
+                        dispatch_async(_workingQueue, ^{
+                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                                [tracker stopSession];
+                            }
+                        });
+                    }
+                         error:error];
+}
+
+- (void)registerScreenTrackerFromClass:(Class)clazz screenCallback:(CTXUserActivityScreenHit * (^)(id<CTXMethodCallInfo> callInfo))screenCallback error:(NSError **)error
+{
+    [clazz aspect_hookSelector:@selector(viewDidAppear:)
+                   withOptions:AspectPositionAfter
+                    usingBlock:^(id<AspectInfo> invocation) {
+                        dispatch_async(_workingQueue, ^{
+                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                                [tracker trackScreenHit:screenCallback((id<CTXMethodCallInfo>)invocation)];
+                            }
+                        });
+                    }
+                         error:error];
+}
+
+- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor event:(CTXUserActivityEvent *)event error:(NSError **)error
 {
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
@@ -76,10 +111,10 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             }
                         });
                     }
-                         error:&error];
+                         error:error];
 }
 
-- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor eventCallback:(id<CTXUserActivityEventProtocol> (^)(id<CTXMethodCallInfo> callInfo))eventCallback error:(NSError *)error
+- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor eventCallback:(CTXUserActivityEvent * (^)(id<CTXMethodCallInfo> callInfo))eventCallback error:(NSError **)error
 {
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
@@ -90,10 +125,10 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             }
                         });
                     }
-                         error:&error];
+                         error:error];
 }
 
-- (void)registerStartTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor timerUUIDCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))uuidCallback error:(NSError *)error
+- (void)registerStartTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor timerUUIDCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))uuidCallback error:(NSError **)error
 {
     __weak typeof(self) weakSelf = self;
     
@@ -107,13 +142,13 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             weakSelf.timerTrackers[uuid] = @{CTXTrackTimerStartDate:[NSDate new], CTXTrackTimerStartMethodInfo:(id<CTXMethodCallInfo>)invocation} ;
                         });
                     }
-                         error:&error];
+                         error:error];
 }
 
 - (void)registerStopTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor
                         timerUUIDCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))uuidCallback
-                            eventCallback:(id<CTXUserActivityEventProtocol> (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
-                                    error:(NSError *)error
+                            eventCallback:(CTXUserActivityTiming * (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
+                                    error:(NSError **)error
 {
     __weak typeof(self) weakSelf = self;
     
@@ -133,18 +168,18 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             NSTimeInterval duration = [startInfo[CTXTrackTimerStartDate] timeIntervalSinceDate:[NSDate new]];
                             
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                                [tracker trackEvent:eventCallback(startInfo[CTXTrackTimerStartMethodInfo], (id<CTXMethodCallInfo>)invocation, duration)];
+                                [tracker trackTiming:eventCallback(startInfo[CTXTrackTimerStartMethodInfo], (id<CTXMethodCallInfo>)invocation, duration)];
                             }
                         });
                     }
-                         error:&error];
+                         error:error];
 }
 
 - (void)registerTimeTrackerFromClass:(Class)clazz
                        startSelector:(SEL)startSelektor
                         stopSelector:(SEL)stopSelektor
-                       eventCallback:(id<CTXUserActivityEventProtocol> (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
-                               error:(NSError *)error
+                       eventCallback:(CTXUserActivityTiming * (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
+                               error:(NSError **)error
 {
     NSString *(^timerCallback)(id<CTXMethodCallInfo> callInfo) = ^NSString *(id<CTXMethodCallInfo> callInfo){
         return [NSString stringWithFormat:@"%lu|%@|%@", (unsigned long)[[callInfo instance] hash], NSStringFromSelector(startSelektor), NSStringFromSelector(stopSelektor)];
@@ -166,46 +201,6 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
 }
 
 
-
-//- (void)setupWithConfiguration:(NSDictionary *)configuration
-//{
-//    for (NSDictionary *trackedScreen in configuration[CTXUserActivityTrackingManagerConfigurationScreens]) {
-//        
-//        Class clazz = NSClassFromString(trackedScreen[CTXUserActivityTrackingManagerConfigurationClass]);
-//
-//        NSError *error = nil;
-//        [clazz aspect_hookSelector:@selector(viewDidAppear:)
-//                       withOptions:AspectPositionAfter
-//                        usingBlock:^(id<AspectInfo> invocation) {
-//                            dispatch_async(_workingQueue, ^{
-//                                NSString *viewName = trackedScreen[CTXUserActivityTrackingManagerConfigurationScreenName];
-//                                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-//                                    [tracker trackScreenHitWithName:viewName];
-//                                }
-//                            });
-//                        }
-//                             error:&error];
-//    }
-//    
-//    for (NSDictionary *trackedEvents in configuration[CTXUserActivityTrackingManagerConfigurationEvents]) {
-//        
-//        Class clazz = NSClassFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationClass]);
-//        SEL selektor = NSSelectorFromString(trackedEvents[CTXUserActivityTrackingManagerConfigurationEventSelector]);
-//
-//        NSError *error = nil;
-//        [clazz aspect_hookSelector:selektor
-//                       withOptions:AspectPositionBefore
-//                        usingBlock:^(id<AspectInfo> invocation) {
-//                            dispatch_async(_workingQueue, ^{
-//                                CTXUserActivityButtonPressedEvent *buttonPressEvent = [CTXUserActivityButtonPressedEvent eventWithLabel:trackedEvents[CTXUserActivityTrackingManagerConfigurationEventLabel]];
-//                                for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-//                                    [tracker trackEvent:buttonPressEvent];
-//                                }
-//                            });
-//                        }
-//                             error:&error];
-//    }
-//}
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker
 {

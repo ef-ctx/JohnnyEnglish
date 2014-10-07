@@ -1,7 +1,9 @@
 PODS:
   - Aspects (1.4.1)
+  - GoogleAnalytics-iOS-SDK (3.0.9)
   - JohnnyEnglish (0.0.1):
     - Aspects (~> 1.4.1)
+    - GoogleAnalytics-iOS-SDK (~> 3.0)
 
 DEPENDENCIES:
   - JohnnyEnglish (from `../`)
@@ -12,6 +14,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Aspects: a6368eba05295b24ffe0e9acfb9080cc3b0f4b5f
-  JohnnyEnglish: 6aeec67b4381ba2ec1e1233ca2b8c03a63a43f2e
+  GoogleAnalytics-iOS-SDK: d9e198b1f955259a72886769be7377cdfcdb2250
+  JohnnyEnglish: ccb30d45d853cda356dd0fc335e7b7d2bcfc720f
 
 COCOAPODS: 0.33.1

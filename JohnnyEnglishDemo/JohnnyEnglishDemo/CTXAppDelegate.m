@@ -63,13 +63,9 @@
 
 - (void)trackerSetup
 {
-    NSDictionary *configuration =
-    @{
-      
-    };
     
     self.trackingManager = [[CTXUserActivityTrackingManager alloc] init];
-    [self.trackingManager setupWithConfiguration:configuration];
+//    [self.trackingManager setupWithConfiguration:configuration];
     
     CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:@"--trackingId--"];
     [self.trackingManager registerTracker:tracker];

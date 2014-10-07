@@ -30,7 +30,7 @@
     UIButton *nextScreen = [UIButton buttonWithType:UIButtonTypeSystem];
     [nextScreen setTitle:@"Next Screen" forState:UIControlStateNormal];
     nextScreen.translatesAutoresizingMaskIntoConstraints = NO;
-//    [nextScreen addTarget:self action:@selector(<#selector#>) forControlEvents:<#(UIControlEvents)#>]
+    [nextScreen addTarget:self action:@selector(nextScreenAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nextScreen];
     
     UIButton *startTimer1 = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -51,12 +51,17 @@
     
 }
 
-- (void)startTimer1Action
+- (void)nextScreenAction:(id)sender
 {
     
 }
 
-- (void)startTimer2Action
+- (void)startTimer1Action:(id)sender
+{
+    
+}
+
+- (void)startTimer2Action:(id)sender
 {
     
 }

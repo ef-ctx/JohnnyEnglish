@@ -9,13 +9,22 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CTXUserActivityEventProtocol.h"
+@class CTXUserActivityTiming;
+@class CTXUserActivityEvent;
+@class CTXUserActivityScreenHit;
 
 @protocol CTXUserActivityTrackerProtocol <NSObject>
 
 @optional
 
-- (void)trackScreenHitWithName:(NSString *)screenName;
-- (void)trackEvent:(id<CTXUserActivityEventProtocol>)event;
+- (void)startSessionWithScreenHit:(NSString *)screenName;
+- (void)stopSession;
+
+- (void)trackUserId:(NSString *)userId;
+
+- (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit;
+- (void)trackEvent:(CTXUserActivityEvent *)event;
+- (void)trackTiming:(CTXUserActivityTiming *)timing;
+
 
 @end
