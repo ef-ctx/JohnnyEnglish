@@ -20,7 +20,6 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 @interface CTXGATracker()
 
 @property (nonatomic, strong) id<GAITracker> tracker;
-@property (nonatomic, strong) GAIDictionaryBuilder *builder;
 
 @end
 
@@ -45,69 +44,59 @@ static NSUInteger const kTrackerDispatchInterval = 120;
     [self.tracker set:@"&uid" value:userId];
 }
 
-- (void)startSessionWithScreenHit:(NSString *)screenName
-{
-    self.builder = [GAIDictionaryBuilder createScreenView];
-    [self.builder set:@"start" forKey:kGAISessionControl];
-    [self.tracker set:kGAIScreenName value:screenName];
-    [self.tracker send:[self.builder build]];
-}
-
-- (void)stopSession
-{
-    if (self.builder) {
-        [self.builder set:@"end" forKey:kGAISessionControl];
-        self.builder = nil;
-    } else {
-        NSLog(@"Warning: [%@] You're trying to stop a session without starting it", NSStringFromSelector(_cmd));
-    }
-}
-
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit
 {
-    [screenHit.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customDimensionForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
-    }];
-    
-    [screenHit.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customMetricForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
-    }];
+    GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createScreenView];
+    [self configureBuilder:builder withUserActivity:screenHit];
     
     [self.tracker set:kGAIScreenName value:screenHit.screenName];
-    
-    [self.tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    [self.tracker send:[builder build]];
 }
 
 - (void)trackEvent:(CTXUserActivityEvent *)event
 {
-    [event.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customDimensionForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
-    }];
-    
-    [event.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customMetricForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
-    }];
-    
-    [self.tracker send:[[GAIDictionaryBuilder createEventWithCategory:[event category]
-                                                               action:[event action]
-                                                                label:[event label]
-                                                                value:[event value]] build]];
+    GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createEventWithCategory:event.category
+                                                                           action:event.action
+                                                                            label:event.label
+                                                                            value:event.value];
+    [self configureBuilder:builder withUserActivity:event];
+    [self.tracker send:[builder build]];
 }
 
 - (void)trackTiming:(CTXUserActivityTiming *)timing
 {
-    [timing.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
+    GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createTimingWithCategory:timing.category
+                                                                          interval:timing.interval
+                                                                              name:timing.name
+                                                                             label:timing.label];
+    [self configureBuilder:builder withUserActivity:timing];
+    [self.tracker send:[builder build]];
+}
+
+#pragma mark - Private
+
+- (void)configureBuilder:(GAIDictionaryBuilder *)builder withUserActivity:(CTXUserActivity *)userActivity
+{
+    switch (userActivity.sessionControl) {
+        case CTXSessionControlStart:
+        {
+            [builder set:@"start" forKey:kGAISessionControl];
+        } break;
+        case CTXSessionControlStop:
+        {
+            [builder set:@"stop" forKey:kGAISessionControl];
+        } break;
+        default:
+            break;
+    }
+    
+    [userActivity.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
         [self.tracker set:[GAIFields customDimensionForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
     }];
     
-    [timing.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
+    [userActivity.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
         [self.tracker set:[GAIFields customMetricForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
     }];
-    
-    [self.tracker send:[[GAIDictionaryBuilder createTimingWithCategory:timing.category
-                                                              interval:timing.interval
-                                                                  name:timing.name
-                                                                 label:timing.label] build]];
 }
 
 @end

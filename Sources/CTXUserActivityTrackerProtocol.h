@@ -17,9 +17,6 @@
 
 @optional
 
-- (void)startSessionWithScreenHit:(NSString *)screenName;
-- (void)stopSession;
-
 - (void)trackUserId:(NSString *)userId;
 
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit;

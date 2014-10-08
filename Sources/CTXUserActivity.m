@@ -22,6 +22,7 @@
     if (self = [super init]) {
         self.customDimensions = [NSMutableDictionary dictionary];
         self.customMetrics = [NSMutableDictionary dictionary];
+        self.sessionControl = CTXSessionControlNone;
     }
     
     return self;

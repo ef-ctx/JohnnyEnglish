@@ -44,6 +44,13 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     return self;
 }
 
+- (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker
+{
+    if ([tracker conformsToProtocol:@protocol(CTXUserActivityTrackerProtocol)]) {
+        [self.trackers addObject:tracker];
+    }
+}
+
 - (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))userIdCallback error:(NSError **)error
 {
     [clazz aspect_hookSelector:selektor
@@ -52,34 +59,6 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                         dispatch_async(_workingQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                 [tracker trackUserId:userIdCallback((id<CTXMethodCallInfo>) invocation)];
-                            }
-                        });
-                    }
-                         error:error];
-}
-
-- (void)registerStartSessionFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError **)error
-{
-    [clazz aspect_hookSelector:@selector(viewDidAppear:)
-                   withOptions:AspectPositionAfter
-                    usingBlock:^(id<AspectInfo> invocation) {
-                        dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                                [tracker startSessionWithScreenHit:screenName];
-                            }
-                        });
-                    }
-                         error:error];
-}
-
-- (void)registerStopSessionFromClass:(Class)clazz selector:(SEL)selektor error:(NSError **)error
-{
-    [clazz aspect_hookSelector:selektor
-                   withOptions:AspectPositionAfter
-                    usingBlock:^(id<AspectInfo> invocation) {
-                        dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-                                [tracker stopSession];
                             }
                         });
                     }
@@ -202,11 +181,5 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
 
 
 
-- (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker
-{
-    if ([tracker conformsToProtocol:@protocol(CTXUserActivityTrackerProtocol)]) {
-        [self.trackers addObject:tracker];
-    }
-}
 
 @end
