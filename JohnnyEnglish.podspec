@@ -13,12 +13,13 @@ Pod::Spec.new do |s|
   }
 
   s.dependency 'Aspects',     '~>1.4.1'
+  s.dependency 'GoogleAnalytics-iOS-SDK', '~> 3.0'
 
   s.platform     = :ios
   s.ios.deployment_target = '7.0'
   s.requires_arc = true
   
   s.source   = { :git => 'git@github.com:ef-ctx/JohnnyEnglish.git', :tag => "#{s.version}" }
-  s.source_files = 'Sources/*.{h,m}'
+  s.source_files = 'Sources/*.{h,m}', 'Sources/Trackers/*/*.{h,m}'
   
 end

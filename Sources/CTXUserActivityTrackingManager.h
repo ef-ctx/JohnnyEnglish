@@ -8,11 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
+
+@protocol CTXMethodCallInfo <NSObject>
+
+- (id)instance;
+- (NSInvocation *)originalInvocation;
+- (NSArray *)arguments;
+
+@end
+
+
 @protocol CTXUserActivityTrackerProtocol;
 
 @interface CTXUserActivityTrackingManager : NSObject
 
-- (void)setupWithConfiguration:(NSDictionary *)configuration;
+//- (void)setupWithConfiguration:(NSDictionary *)configuration;
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 

@@ -7,13 +7,27 @@
 //
 
 #import "CTXAppDelegate.h"
+#import "CTXMainViewController.h"
+
+#import <JohnnyEnglish/CTXGATracker.h>
+#import <JohnnyEnglish/CTXUserActivityTrackingManager.h>
+
+@interface CTXAppDelegate()
+
+@property (strong, nonatomic) CTXUserActivityTrackingManager *trackingManager;
+
+@end
+
 
 @implementation CTXAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self trackerSetup];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    [self.window setRootViewController:[[CTXMainViewController alloc] init]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
@@ -44,6 +58,20 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (void)trackerSetup
+{
+    NSDictionary *configuration =
+    @{
+      
+    };
+    
+    self.trackingManager = [[CTXUserActivityTrackingManager alloc] init];
+    [self.trackingManager setupWithConfiguration:configuration];
+    
+    CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:@"--trackingId--"];
+    [self.trackingManager registerTracker:tracker];
 }
 
 @end
