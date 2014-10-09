@@ -6,7 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
 #import "CTXUserActivity.h"
 
 @interface CTXUserActivityEvent : CTXUserActivity

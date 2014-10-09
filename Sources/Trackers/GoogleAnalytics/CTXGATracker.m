@@ -30,7 +30,14 @@ static NSUInteger const kTrackerDispatchInterval = 120;
     if (self = [super init]) {
         [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
         [[GAI sharedInstance] setDispatchInterval:kTrackerDispatchInterval];
-        [[GAI sharedInstance] setDryRun:YES];//TODO: Temporary
+//        [GAI sharedInstance].optOut
+        
+        //TODO: Temporary
+        // Begin ---
+        [[GAI sharedInstance] setDryRun:YES];
+        [[GAI sharedInstance].logger setLogLevel:kGAILogLevelVerbose];
+        //--- End
+        
         self.tracker = [[GAI sharedInstance] trackerWithTrackingId:trackingId];
     }
     

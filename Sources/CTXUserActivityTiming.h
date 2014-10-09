@@ -6,7 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "CTXUserActivity.h"
 
 @interface CTXUserActivityTiming : CTXUserActivity

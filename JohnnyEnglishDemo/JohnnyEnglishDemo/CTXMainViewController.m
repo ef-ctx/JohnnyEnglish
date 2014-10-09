@@ -7,6 +7,41 @@
 //
 
 #import "CTXMainViewController.h"
+#import "CTXSecondViewController.h"
+
+#import <objc/runtime.h>
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Button
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@interface UIButton (AssociatedObjects)
+
+@property (nonatomic) void (^CTXAlertViewButtonActionHandler)();
+
+@end
+
+@implementation UIButton (AssociatedObjects)
+@dynamic CTXAlertViewButtonActionHandler;
+
+- (void (^)())CTXAlertViewButtonActionHandler
+{
+    return objc_getAssociatedObject(self, @selector(CTXAlertViewButtonActionHandler));
+}
+
+- (void)setCTXAlertViewButtonActionHandler:(void (^)())CTXAlertViewButtonActionHandler
+{
+    objc_setAssociatedObject(self, @selector(CTXAlertViewButtonActionHandler), CTXAlertViewButtonActionHandler, OBJC_ASSOCIATION_COPY);
+}
+
+@end
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - CTXMainViewController
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 @interface CTXMainViewController ()
 
@@ -27,44 +62,66 @@
 {
     [super loadView];
     
-    UIButton *nextScreen = [UIButton buttonWithType:UIButtonTypeSystem];
-    [nextScreen setTitle:@"Next Screen" forState:UIControlStateNormal];
-    nextScreen.translatesAutoresizingMaskIntoConstraints = NO;
-    [nextScreen addTarget:self action:@selector(nextScreenAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:nextScreen];
+    __weak typeof(self) weakself = self;
     
-    UIButton *startTimer1 = [UIButton buttonWithType:UIButtonTypeSystem];
-    [startTimer1 setTitle:@"Start Timer 1" forState:UIControlStateNormal];
-    startTimer1.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:startTimer1];
+    [self addButtonWithLabel:@"Next Screen" action:^{
+        NSLog(@"Next Screen");
+        
+        CTXSecondViewController *viewController = [[CTXSecondViewController alloc] init];
+        [weakself.navigationController pushViewController:viewController animated:YES];
+    }];
     
-    UIButton *startTimer2 = [UIButton buttonWithType:UIButtonTypeSystem];
-    [startTimer1 setTitle:@"Start Timer 2" forState:UIControlStateNormal];
-    startTimer2.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:startTimer2];
+    [self addButtonWithLabel:@"Start Timer" action:^{
+        NSLog(@"Start Timer");
+    }];
     
+    [self addButtonWithLabel:@"Stop Timer" action:^{
+        NSLog(@"Stop Timer");
+    }];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[nextScreen]-[startTimer1]-[startTimer2]"
+}
+
+- (void)tapButtonAction:(UIButton *)sender
+{
+    __weak typeof(self) weakself = self;
+    if(sender.CTXAlertViewButtonActionHandler) {
+        sender.CTXAlertViewButtonActionHandler(weakself);
+    }
+}
+
+- (void)addButtonWithLabel:(NSString *)label action:(void (^)(void))action
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setTitle:label forState:UIControlStateNormal];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [button setCTXAlertViewButtonActionHandler:action];
+    [button addTarget:self action:@selector(tapButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    
+    [self.view removeConstraints:self.view.constraints];
+    
+    NSMutableDictionary *buttonDictionary = [NSMutableDictionary dictionary];
+    NSMutableArray *buttonsFormat = [NSMutableArray array];
+    
+    [self.view.subviews enumerateObjectsUsingBlock:^(UIButton *obj, NSUInteger idx, BOOL *stop) {
+        NSString *buttonName = [NSString stringWithFormat:@"button%lu", (unsigned long)idx];
+        [buttonsFormat addObject:buttonName];
+        [buttonDictionary setObject:obj forKey:buttonName];
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[obj]"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:NSDictionaryOfVariableBindings(obj)]];
+    }];
+    
+    NSString *visualFormat = [NSString stringWithFormat:@"V:|-100-[%@]", [buttonsFormat componentsJoinedByString:@"]-["]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat
                                                                       options:0
                                                                       metrics:nil
-                                                                        views:NSDictionaryOfVariableBindings(nextScreen, startTimer1, startTimer2)]];
-    
+                                                                        views:buttonDictionary]];
 }
-
-- (void)nextScreenAction:(id)sender
-{
-    
-}
-
-- (void)startTimer1Action:(id)sender
-{
-    
-}
-
-- (void)startTimer2Action:(id)sender
-{
-    
-}
-
 
 @end
+
+

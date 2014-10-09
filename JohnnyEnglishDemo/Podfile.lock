@@ -1,8 +1,8 @@
 PODS:
-  - Aspects (1.4.1)
+  - AOP-for-Objective-C (1.0.0ctx)
   - GoogleAnalytics-iOS-SDK (3.0.9)
   - JohnnyEnglish (0.0.1):
-    - Aspects (~> 1.4.1)
+    - AOP-for-Objective-C (= 1.0.0ctx)
     - GoogleAnalytics-iOS-SDK (~> 3.0)
 
 DEPENDENCIES:
@@ -13,8 +13,8 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  Aspects: a6368eba05295b24ffe0e9acfb9080cc3b0f4b5f
+  AOP-for-Objective-C: 849914bda21bc73c45194b4e83a4ba29e4175ed4
   GoogleAnalytics-iOS-SDK: d9e198b1f955259a72886769be7377cdfcdb2250
-  JohnnyEnglish: ccb30d45d853cda356dd0fc335e7b7d2bcfc720f
+  JohnnyEnglish: 8c21eaa8c4a575f2b84c8179c3c1078259c9866c
 
 COCOAPODS: 0.33.1

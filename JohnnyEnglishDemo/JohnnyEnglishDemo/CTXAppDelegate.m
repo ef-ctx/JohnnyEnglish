@@ -28,7 +28,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    [self.window setRootViewController:[[CTXMainViewController alloc] init]];
+    [self.window setRootViewController:[[UINavigationController alloc] initWithRootViewController:[[CTXMainViewController alloc] init]]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
@@ -63,9 +63,20 @@
 
 - (void)trackerSetup
 {
-    
     self.trackingManager = [[CTXUserActivityTrackingManager alloc] init];
-//    [self.trackingManager setupWithConfiguration:configuration];
+    
+//    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXMainViewController") screenName:@"Main Screen"];
+//    
+//    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenName:@"Second Screen"];
+    
+    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"UIViewController") selector:@selector(viewDidAppear:) eventCallback:^CTXUserActivityEvent *(id<CTXMethodCallInfo> callInfo) {
+        CTXUserActivityEvent *event = [[CTXUserActivityEvent alloc] init];
+        event.category = @"UX";
+        event.action = @"show";
+        event.label = @"viewcontroller";
+        
+        return event;
+    }];
     
     CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:@"--trackingId--"];
     [self.trackingManager registerTracker:tracker];
