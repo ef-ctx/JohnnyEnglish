@@ -2,9 +2,9 @@
 //  CTXMainViewController.m
 //  JohnnyEnglishDemo
 //
-//  Created by Mario on 06/10/2014.
-//  Copyright (c) 2014 EF Education First. All rights reserved.
-//
+//  Created by Mario Araújo on 06/10/2014.
+//  Copyright (c) 2014 EF CTX. All rights reserved.
+//  Licensed under the MIT license.
 
 #import "CTXMainViewController.h"
 #import "CTXSecondViewController.h"
@@ -65,20 +65,21 @@
     __weak typeof(self) weakself = self;
     
     [self addButtonWithLabel:@"Next Screen" action:^{
-        NSLog(@"Next Screen");
-        
         CTXSecondViewController *viewController = [[CTXSecondViewController alloc] init];
         [weakself.navigationController pushViewController:viewController animated:YES];
     }];
     
     [self addButtonWithLabel:@"Start Timer" action:^{
-        NSLog(@"Start Timer");
+        [weakself startTimer];
     }];
     
     [self addButtonWithLabel:@"Stop Timer" action:^{
-        NSLog(@"Stop Timer");
+        [weakself stopTimer];
     }];
     
+    [self addButtonWithLabel:@"Dispatch Event" action:^{
+        [weakself dispatchEvent];
+    }];
 }
 
 - (void)tapButtonAction:(UIButton *)sender
@@ -120,6 +121,21 @@
                                                                       options:0
                                                                       metrics:nil
                                                                         views:buttonDictionary]];
+}
+
+- (void)startTimer
+{
+    
+}
+
+- (void)stopTimer
+{
+    
+}
+
+- (void)dispatchEvent
+{
+    
 }
 
 @end

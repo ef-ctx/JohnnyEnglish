@@ -2,9 +2,9 @@
 //  CTXGATracker.m
 //  Pods
 //
-//  Created by Mario on 06/10/2014.
-//
-//
+//  Created by Mario Araújo on 06/10/2014.
+//  Copyright (c) 2014 EF CTX. All rights reserved.
+//  Licensed under the MIT license.
 
 #import "CTXGATracker.h"
 
@@ -30,18 +30,19 @@ static NSUInteger const kTrackerDispatchInterval = 120;
     if (self = [super init]) {
         [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
         [[GAI sharedInstance] setDispatchInterval:kTrackerDispatchInterval];
-//        [GAI sharedInstance].optOut
-        
-        //TODO: Temporary
-        // Begin ---
-        [[GAI sharedInstance] setDryRun:YES];
-        [[GAI sharedInstance].logger setLogLevel:kGAILogLevelVerbose];
-        //--- End
         
         self.tracker = [[GAI sharedInstance] trackerWithTrackingId:trackingId];
     }
     
     return self;
+}
+
+- (void)setDebugMode:(BOOL)value
+{
+    _debugMode = value;
+    
+    [[GAI sharedInstance] setDryRun:value];
+    [[GAI sharedInstance].logger setLogLevel:value ? kGAILogLevelVerbose : kGAILogLevelError];
 }
 
 #pragma mark - CTXUserActivityTrackerProtocol Methods
@@ -53,6 +54,8 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit
 {
+    NSParameterAssert(screenHit.screenName);
+    
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createScreenView];
     [self configureBuilder:builder withUserActivity:screenHit];
     
@@ -62,6 +65,9 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 
 - (void)trackEvent:(CTXUserActivityEvent *)event
 {
+    NSParameterAssert(event.category);
+    NSParameterAssert(event.label);
+    
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createEventWithCategory:event.category
                                                                            action:event.action
                                                                             label:event.label
@@ -72,6 +78,9 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 
 - (void)trackTiming:(CTXUserActivityTiming *)timing
 {
+    NSParameterAssert(timing.category);
+    NSParameterAssert(timing.interval);
+    
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createTimingWithCategory:timing.category
                                                                           interval:timing.interval
                                                                               name:timing.name

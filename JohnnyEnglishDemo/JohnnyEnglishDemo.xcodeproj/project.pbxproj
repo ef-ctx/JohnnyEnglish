@@ -21,6 +21,7 @@
 		073B25E819B385800005F2FC /* JohnnyEnglishDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 073B25E719B385800005F2FC /* JohnnyEnglishDemoTests.m */; };
 		97272FC6B6424F0DB58A0F1A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F857044133D401EB967D560 /* libPods.a */; };
 		AC44F21519E544C600FF4C0A /* CTXSecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC44F21419E544C600FF4C0A /* CTXSecondViewController.m */; };
+		AC44F21819E69F9A00FF4C0A /* CTXBaseSecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC44F21719E69F9A00FF4C0A /* CTXBaseSecondViewController.m */; };
 		AC57AFE319E2EE9600883C1B /* CTXMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC57AFE219E2EE9600883C1B /* CTXMainViewController.m */; };
 		B25C5C9D386F441879833615 /* CTXJohnnyEnglishGoogleAnalyticsConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = B25C5E2D63D1A2E2511E073E /* CTXJohnnyEnglishGoogleAnalyticsConfiguration.m */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,8 @@
 		B25C5E2D63D1A2E2511E073E /* CTXJohnnyEnglishGoogleAnalyticsConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTXJohnnyEnglishGoogleAnalyticsConfiguration.m; sourceTree = "<group>"; };
 		AC44F21319E544C600FF4C0A /* CTXSecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTXSecondViewController.h; sourceTree = "<group>"; };
 		AC44F21419E544C600FF4C0A /* CTXSecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTXSecondViewController.m; sourceTree = "<group>"; };
+		AC44F21619E69F9A00FF4C0A /* CTXBaseSecondViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTXBaseSecondViewController.h; sourceTree = "<group>"; };
+		AC44F21719E69F9A00FF4C0A /* CTXBaseSecondViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTXBaseSecondViewController.m; sourceTree = "<group>"; };
 		AC57AFE119E2EE9600883C1B /* CTXMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTXMainViewController.h; sourceTree = "<group>"; };
 		AC57AFE219E2EE9600883C1B /* CTXMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTXMainViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,6 +131,8 @@
 				AC57AFE219E2EE9600883C1B /* CTXMainViewController.m */,
 				AC44F21319E544C600FF4C0A /* CTXSecondViewController.h */,
 				AC44F21419E544C600FF4C0A /* CTXSecondViewController.m */,
+				AC44F21619E69F9A00FF4C0A /* CTXBaseSecondViewController.h */,
+				AC44F21719E69F9A00FF4C0A /* CTXBaseSecondViewController.m */,
 				073B25D419B385800005F2FC /* Images.xcassets */,
 				073B25C919B385800005F2FC /* Supporting Files */,
 				B25C5E2D63D1A2E2511E073E /* CTXJohnnyEnglishGoogleAnalyticsConfiguration.m */,
@@ -299,6 +304,7 @@
 				AC44F21519E544C600FF4C0A /* CTXSecondViewController.m in Sources */,
 				073B25D319B385800005F2FC /* CTXAppDelegate.m in Sources */,
 				073B25CF19B385800005F2FC /* main.m in Sources */,
+				AC44F21819E69F9A00FF4C0A /* CTXBaseSecondViewController.m in Sources */,
 				AC57AFE319E2EE9600883C1B /* CTXMainViewController.m in Sources */,
 				B25C5C9D386F441879833615 /* CTXJohnnyEnglishGoogleAnalyticsConfiguration.m in Sources */,
 			);

@@ -65,18 +65,40 @@
 {
     self.trackingManager = [[CTXUserActivityTrackingManager alloc] init];
     
-//    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXMainViewController") screenName:@"Main Screen"];
-//    
-//    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenName:@"Second Screen"];
+    NSError *error = nil;
     
-    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"UIViewController") selector:@selector(viewDidAppear:) eventCallback:^CTXUserActivityEvent *(id<CTXMethodCallInfo> callInfo) {
+    void (^checkError)(NSError *) = ^(NSError *error){
+        if (error) {
+            NSLog(@"ERROR: %@", error);
+        }
+    };
+    
+    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXMainViewController") screenName:@"Main Screen" error:&error];
+    checkError(error);
+    
+    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenCallback:^CTXUserActivityScreenHit *(id<CTXMethodCallInfo> callInfo) {
+        CTXUserActivityScreenHit *hitScreen = [[CTXUserActivityScreenHit alloc] init];
+        hitScreen.screenName = [[callInfo instance] title];
+        return hitScreen;
+    } error:&error];
+    checkError(error);
+    
+    [self.trackingManager registerTimeTrackerFromClass:NSClassFromString(@"CTXMainViewController") startSelector:NSSelectorFromString(@"startTimer") stopSelector:NSSelectorFromString(@"stopTimer") eventCallback:^CTXUserActivityTiming *(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration) {
+        CTXUserActivityTiming *timing = [[CTXUserActivityTiming alloc] init];
+        timing.category = @"UX";
+        timing.name = @"timer";
+        timing.interval = @(duration);
+        return timing;
+    } error:&error];
+    checkError(error);
+    
+    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"CTXMainViewController") selector:NSSelectorFromString(@"dispatchEvent") eventCallback:^CTXUserActivityEvent *(id<CTXMethodCallInfo> callInfo) {
         CTXUserActivityEvent *event = [[CTXUserActivityEvent alloc] init];
         event.category = @"UX";
-        event.action = @"show";
-        event.label = @"viewcontroller";
-        
+        event.action = @"touch";
         return event;
-    }];
+    } error:&error];
+    checkError(error);
     
     CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:@"--trackingId--"];
     [self.trackingManager registerTracker:tracker];
