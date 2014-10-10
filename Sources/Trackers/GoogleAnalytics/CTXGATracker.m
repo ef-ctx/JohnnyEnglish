@@ -66,7 +66,7 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 - (void)trackEvent:(CTXUserActivityEvent *)event
 {
     NSParameterAssert(event.category);
-    NSParameterAssert(event.label);
+    NSParameterAssert(event.action);
     
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createEventWithCategory:event.category
                                                                            action:event.action

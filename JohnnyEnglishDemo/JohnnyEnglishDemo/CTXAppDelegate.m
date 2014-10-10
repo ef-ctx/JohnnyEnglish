@@ -9,6 +9,7 @@
 
 #import "CTXAppDelegate.h"
 #import "CTXMainViewController.h"
+#import "CTXJohnnyEnglishGoogleAnalyticsConfiguration.h"
 
 #import <JohnnyEnglish/CTXGATracker.h>
 #import <JohnnyEnglish/CTXUserActivityTrackingManager.h>
@@ -76,6 +77,13 @@
     [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXMainViewController") screenName:@"Main Screen" error:&error];
     checkError(error);
     
+    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXBaseViewController") screenCallback:^CTXUserActivityScreenHit *(id<CTXMethodCallInfo> callInfo) {
+        CTXUserActivityScreenHit *hitScreen = [[CTXUserActivityScreenHit alloc] init];
+        hitScreen.screenName = [NSString stringWithFormat:@"Base => %@", [[callInfo instance] class]];
+        return hitScreen;
+    } error:&error];
+    checkError(error);
+    
     [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenCallback:^CTXUserActivityScreenHit *(id<CTXMethodCallInfo> callInfo) {
         CTXUserActivityScreenHit *hitScreen = [[CTXUserActivityScreenHit alloc] init];
         hitScreen.screenName = [[callInfo instance] title];
@@ -100,7 +108,9 @@
     } error:&error];
     checkError(error);
     
-    CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:@"--trackingId--"];
+    CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:CTXJohnnyEnglishGoogleAnalyticsConfigurationTrackingID];
+    tracker.debugMode = YES;
+    
     [self.trackingManager registerTracker:tracker];
 }
 

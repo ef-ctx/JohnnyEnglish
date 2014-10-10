@@ -6,18 +6,17 @@
 //  Copyright (c) 2014 EF CTX. All rights reserved.
 //  Licensed under the MIT license.
 
-#import "CTXBaseSecondViewController.h"
+#import "CTXBaseViewController.h"
 
-@interface CTXBaseSecondViewController ()
+@interface CTXBaseViewController ()
 
 @end
 
-@implementation CTXBaseSecondViewController
+@implementation CTXBaseViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 }
-
 
 @end

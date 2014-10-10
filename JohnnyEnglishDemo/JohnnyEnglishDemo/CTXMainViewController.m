@@ -8,6 +8,7 @@
 
 #import "CTXMainViewController.h"
 #import "CTXSecondViewController.h"
+#import "CTXThirdViewController.h"
 
 #import <objc/runtime.h>
 
@@ -64,8 +65,13 @@
     
     __weak typeof(self) weakself = self;
     
-    [self addButtonWithLabel:@"Next Screen" action:^{
+    [self addButtonWithLabel:@"Second Screen" action:^{
         CTXSecondViewController *viewController = [[CTXSecondViewController alloc] init];
+        [weakself.navigationController pushViewController:viewController animated:YES];
+    }];
+    
+    [self addButtonWithLabel:@"Third Screen" action:^{
+        CTXThirdViewController *viewController = [[CTXThirdViewController alloc] init];
         [weakself.navigationController pushViewController:viewController animated:YES];
     }];
     

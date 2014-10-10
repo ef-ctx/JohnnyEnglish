@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CTXBaseSecondViewController : UIViewController
+@interface CTXBaseViewController : UIViewController
 
 @end

@@ -7,8 +7,8 @@
 //  Licensed under the MIT license.
 
 #import <UIKit/UIKit.h>
-#import "CTXBaseSecondViewController.h"
+#import "CTXBaseViewController.h"
 
-@interface CTXSecondViewController : CTXBaseSecondViewController
+@interface CTXSecondViewController : CTXBaseViewController
 
 @end
