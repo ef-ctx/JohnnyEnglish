@@ -41,7 +41,6 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 {
     _debugMode = value;
     
-    [[GAI sharedInstance] setDryRun:value];
     [[GAI sharedInstance].logger setLogLevel:value ? kGAILogLevelVerbose : kGAILogLevelError];
 }
 

@@ -77,21 +77,21 @@
     [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXMainViewController") screenName:@"Main Screen" error:&error];
     checkError(error);
     
-    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXBaseViewController") screenCallback:^CTXUserActivityScreenHit *(id<CTXMethodCallInfo> callInfo) {
+    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXBaseViewController") screenCallback:^CTXUserActivityScreenHit *(CTXMethodCallInfo *callInfo) {
         CTXUserActivityScreenHit *hitScreen = [[CTXUserActivityScreenHit alloc] init];
         hitScreen.screenName = [NSString stringWithFormat:@"Base => %@", [[callInfo instance] class]];
         return hitScreen;
     } error:&error];
     checkError(error);
     
-    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenCallback:^CTXUserActivityScreenHit *(id<CTXMethodCallInfo> callInfo) {
+    [self.trackingManager registerScreenTrackerFromClass:NSClassFromString(@"CTXSecondViewController") screenCallback:^CTXUserActivityScreenHit *(CTXMethodCallInfo *callInfo) {
         CTXUserActivityScreenHit *hitScreen = [[CTXUserActivityScreenHit alloc] init];
         hitScreen.screenName = [[callInfo instance] title];
         return hitScreen;
     } error:&error];
     checkError(error);
     
-    [self.trackingManager registerTimeTrackerFromClass:NSClassFromString(@"CTXMainViewController") startSelector:NSSelectorFromString(@"startTimer") stopSelector:NSSelectorFromString(@"stopTimer") eventCallback:^CTXUserActivityTiming *(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration) {
+    [self.trackingManager registerTimeTrackerFromClass:NSClassFromString(@"CTXMainViewController") startSelector:NSSelectorFromString(@"startTimer") stopSelector:NSSelectorFromString(@"stopTimer") eventCallback:^CTXUserActivityTiming *(CTXMethodCallInfo *startMethodCallInfo, CTXMethodCallInfo *stopMethodCallInfo, NSTimeInterval duration) {
         CTXUserActivityTiming *timing = [[CTXUserActivityTiming alloc] init];
         timing.category = @"UX";
         timing.name = @"timer";
@@ -100,10 +100,31 @@
     } error:&error];
     checkError(error);
     
-    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"CTXMainViewController") selector:NSSelectorFromString(@"dispatchEvent") eventCallback:^CTXUserActivityEvent *(id<CTXMethodCallInfo> callInfo) {
+    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"CTXMainViewController") selector:NSSelectorFromString(@"dispatchEvent") eventCallback:^CTXUserActivityEvent *(CTXMethodCallInfo *callInfo) {
         CTXUserActivityEvent *event = [[CTXUserActivityEvent alloc] init];
         event.category = @"UX";
         event.action = @"touch";
+        [event setCustomMetric:@"1" withValue:[@(rand()) stringValue]];
+        return event;
+    } error:&error];
+    checkError(error);
+    
+    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"CTXMainViewController") selector:NSSelectorFromString(@"startSession") eventCallback:^CTXUserActivityEvent *(CTXMethodCallInfo *callInfo) {
+        CTXUserActivityEvent *event = [[CTXUserActivityEvent alloc] init];
+        event.category = @"UX";
+        event.action = @"touch";
+        event.label = @"session start button";
+        event.sessionControl = CTXSessionControlStart;
+        return event;
+    } error:&error];
+    checkError(error);
+    
+    [self.trackingManager registerEventTrackerFromClass:NSClassFromString(@"CTXMainViewController") selector:NSSelectorFromString(@"stopSession") eventCallback:^CTXUserActivityEvent *(CTXMethodCallInfo *callInfo) {
+        CTXUserActivityEvent *event = [[CTXUserActivityEvent alloc] init];
+        event.category = @"UX";
+        event.action = @"touch";
+        event.label = @"session start button";
+        event.sessionControl = CTXSessionControlStop;
         return event;
     } error:&error];
     checkError(error);

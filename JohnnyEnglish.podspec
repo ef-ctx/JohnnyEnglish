@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
     "Alberto De Bortoli" => "'alberto.debortoli@ef.com"
   }
 
-  s.dependency 'Aspects',     '~>1.4.1'
+  s.dependency 'Aspects',     '~>1.3.1.1ctx'
   s.dependency 'GoogleAnalytics-iOS-SDK', '~> 3.0'
 
   s.platform     = :ios

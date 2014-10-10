@@ -12,12 +12,13 @@
 #import "CTXUserActivityScreenHit.h"
 #import "CTXUserActivityTiming.h"
 
+@interface CTXMethodCallInfo : NSObject
 
-@protocol CTXMethodCallInfo <NSObject>
+@property (strong, nonatomic) id instance;
+@property (strong, nonatomic) NSInvocation * originalInvocation;
+@property (strong, nonatomic) NSArray * arguments;
 
-- (id)instance;
-- (NSInvocation *)originalInvocation;
-- (NSArray *)arguments;
+- (instancetype)initWithInstance:(id)instance args:(NSArray *)args;
 
 @end
 
@@ -28,23 +29,23 @@
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 
-- (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))userIdCallback error:(NSError **)error;
+- (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))userIdCallback error:(NSError **)error;
 
 - (void)registerScreenTrackerFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError **)error;
-- (void)registerScreenTrackerFromClass:(Class)clazz screenCallback:(CTXUserActivityScreenHit * (^)(id<CTXMethodCallInfo> callInfo))screenCallback error:(NSError **)error;
+- (void)registerScreenTrackerFromClass:(Class)clazz screenCallback:(CTXUserActivityScreenHit * (^)(CTXMethodCallInfo *callInfo))screenCallback error:(NSError **)error;
 
 - (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor event:(CTXUserActivityEvent *)event error:(NSError **)error;
-- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor eventCallback:(CTXUserActivityEvent * (^)(id<CTXMethodCallInfo> callInfo))eventCallback error:(NSError **)error;
+- (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor eventCallback:(CTXUserActivityEvent * (^)(CTXMethodCallInfo *callInfo))eventCallback error:(NSError **)error;
 
-- (void)registerStartTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor timerUUIDCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))uuidCallback error:(NSError **)error;
+- (void)registerStartTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor timerUUIDCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))uuidCallback error:(NSError **)error;
 - (void)registerStopTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor
-                        timerUUIDCallback:(NSString * (^)(id<CTXMethodCallInfo> callInfo))uuidCallback
-                            eventCallback:(CTXUserActivityTiming * (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
+                        timerUUIDCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))uuidCallback
+                            eventCallback:(CTXUserActivityTiming * (^)(CTXMethodCallInfo *startMethodCallInfo, CTXMethodCallInfo *stopMethodCallInfo, NSTimeInterval duration))eventCallback
                                     error:(NSError **)error;
 - (void)registerTimeTrackerFromClass:(Class)clazz
                        startSelector:(SEL)startSelektor
                         stopSelector:(SEL)stopSelektor
-                       eventCallback:(CTXUserActivityTiming * (^)(id<CTXMethodCallInfo> startMethodCallInfo, id<CTXMethodCallInfo> stopMethodCallInfo, NSTimeInterval duration))eventCallback
+                       eventCallback:(CTXUserActivityTiming * (^)(CTXMethodCallInfo *startMethodCallInfo, CTXMethodCallInfo *stopMethodCallInfo, NSTimeInterval duration))eventCallback
                                error:(NSError **)error;
 
 @end

@@ -86,6 +86,14 @@
     [self addButtonWithLabel:@"Dispatch Event" action:^{
         [weakself dispatchEvent];
     }];
+    
+    [self addButtonWithLabel:@"Start Session" action:^{
+        [weakself startSession];
+    }];
+    
+    [self addButtonWithLabel:@"Stop Session" action:^{
+        [weakself stopSession];
+    }];
 }
 
 - (void)tapButtonAction:(UIButton *)sender
@@ -140,6 +148,16 @@
 }
 
 - (void)dispatchEvent
+{
+    
+}
+
+- (void)startSession
+{
+    
+}
+
+- (void)stopSession
 {
     
 }
