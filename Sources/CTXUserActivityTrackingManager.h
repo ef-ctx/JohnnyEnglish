@@ -18,8 +18,6 @@
 @property (strong, nonatomic) NSInvocation * originalInvocation;
 @property (strong, nonatomic) NSArray * arguments;
 
-- (instancetype)initWithInstance:(id)instance args:(NSArray *)args;
-
 @end
 
 
