@@ -20,16 +20,25 @@
 static NSString *const CTXTrackTimerStartDate           = @"startTimer";
 static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
 
+@interface CTXMethodCallInfo()
+@property (strong, nonatomic) id<AspectInfo> info;
+@end
+
 @implementation CTXMethodCallInfo
 
 - (instancetype)initWithAspectInfo:(id<AspectInfo>)info;
 {
     if (self = [super init]) {
-        self.instance = [info instance];
-        self.arguments = [info arguments];
-        self.originalInvocation = [info originalInvocation];
+        _info = info;
+        _instance = [info instance];
+        _originalInvocation = [info originalInvocation];
     }
     return self;
+}
+
+- (NSArray *)arguments
+{
+    return [self.info arguments];
 }
 
 @end

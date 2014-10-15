@@ -14,9 +14,9 @@
 
 @interface CTXMethodCallInfo : NSObject
 
-@property (strong, nonatomic) id instance;
-@property (strong, nonatomic) NSInvocation * originalInvocation;
-@property (strong, nonatomic) NSArray * arguments;
+@property (strong, nonatomic, readonly) id instance;
+@property (strong, nonatomic, readonly) NSInvocation * originalInvocation;
+@property (strong, nonatomic, readonly) NSArray * arguments;
 
 @end
 
