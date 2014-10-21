@@ -79,8 +79,8 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> info) {
+                        NSString *userId = userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
                         dispatch_async(_workingQueue, ^{
-                            NSString *userId = userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                 [tracker trackUserId:userId];
                             }
@@ -103,12 +103,12 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:@selector(viewDidAppear:)
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> info) {
+                        CTXUserActivityScreenHit *screenHit = screenCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
+                        
+                        if (!screenHit)
+                            return;
+                        
                         dispatch_async(_workingQueue, ^{
-                            CTXUserActivityScreenHit *screenHit = screenCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
-                            
-                            if (!screenHit)
-                                return;
-                                
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                 [tracker trackScreenHit:screenHit];
                             }
@@ -122,7 +122,6 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
-                        
                         if (!event)
                             return;
                         
@@ -140,12 +139,12 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
+                        CTXUserActivityEvent *event = eventCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
+                        
+                        if (!event)
+                            return;
+                        
                         dispatch_async(_workingQueue, ^{
-                            CTXUserActivityEvent *event = eventCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
-                            
-                            if (!event)
-                                return;
-                            
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                 [tracker trackEvent:event];
                             }
@@ -161,10 +160,10 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
+                        CTXMethodCallInfo *invocation = [[CTXMethodCallInfo alloc] initWithAspectInfo:info];
+                        NSString *uuid = uuidCallback(invocation);
+                        
                         dispatch_async(_workingQueue, ^{
-                            CTXMethodCallInfo *invocation = [[CTXMethodCallInfo alloc] initWithAspectInfo:info];
-                            NSString *uuid = uuidCallback(invocation);
-                            
                             weakSelf.timerTrackers[uuid] = @{CTXTrackTimerStartDate:[NSDate new], CTXTrackTimerStartMethodInfo:invocation} ;
                         });
                     }
@@ -181,22 +180,22 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
+                        NSString *uuid = uuidCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
+                        NSDictionary *startInfo = weakSelf.timerTrackers[uuid];
+                        [weakSelf.timerTrackers removeObjectForKey:uuid];
+                        
+                        if (!startInfo) {
+                            NSLog(@"WARNING: [%@] Stop timer without a proper start with uuid %@", NSStringFromSelector(_cmd), uuid);
+                            return;
+                        }
+                        
+                        NSTimeInterval duration = [[NSDate new] timeIntervalSinceDate:startInfo[CTXTrackTimerStartDate]];
+                        CTXUserActivityTiming *timing = eventCallback(startInfo[CTXTrackTimerStartMethodInfo], [[CTXMethodCallInfo alloc] initWithAspectInfo:info], duration);
+                        
+                        if (!timing)
+                            return;
+                        
                         dispatch_async(_workingQueue, ^{
-                            NSString *uuid = uuidCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
-                            
-                            NSDictionary *startInfo = weakSelf.timerTrackers[uuid];
-                            [weakSelf.timerTrackers removeObjectForKey:uuid];
-                            
-                            if (!startInfo) {
-                                NSLog(@"WARNING: [%@] Stop timer without a proper start with uuid %@", NSStringFromSelector(_cmd), uuid);
-                                return;
-                            }
-                            
-                            NSTimeInterval duration = [[NSDate new] timeIntervalSinceDate:startInfo[CTXTrackTimerStartDate]];
-                            CTXUserActivityTiming *timing = eventCallback(startInfo[CTXTrackTimerStartMethodInfo], [[CTXMethodCallInfo alloc] initWithAspectInfo:info], duration);
-                            
-                            if (!timing)
-                                return;
                             
                             for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
                                 [tracker trackTiming:timing];

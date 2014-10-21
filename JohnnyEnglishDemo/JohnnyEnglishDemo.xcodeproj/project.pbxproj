@@ -19,6 +19,7 @@
 				<string>073B25C119B385800005F2FC</string>
 				<string>073B25C019B385800005F2FC</string>
 				<string>C668EC22B4FF256AB36EBA95</string>
+				<string>7BE87A60680241FEAE0F5460</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -116,7 +117,7 @@
 				<string>073B25C519B385800005F2FC</string>
 				<string>073B25C719B385800005F2FC</string>
 				<string>073B25C319B385800005F2FC</string>
-				<string>97272FC6B6424F0DB58A0F1A</string>
+				<string>13A41B6EFE0E482FB1421F94</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -807,7 +808,7 @@
 		<key>073B25EC19B385800005F2FC</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>EF2B1E94C1298D07DC7F4952</string>
+			<string>7BE87A60680241FEAE0F5460</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
@@ -833,7 +834,7 @@
 		<key>073B25ED19B385800005F2FC</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>A59F597BF554FB65A018DDD3</string>
+			<string>7BE87A60680241FEAE0F5460</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
@@ -935,6 +936,28 @@
 			<key>name</key>
 			<string>Release</string>
 		</dict>
+		<key>13A41B6EFE0E482FB1421F94</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8F857044133D401EB967D560</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>7BE87A60680241FEAE0F5460</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods.xcconfig</string>
+			<key>path</key>
+			<string>Pods/Pods.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
 		<key>8F857044133D401EB967D560</key>
 		<dict>
 			<key>explicitFileType</key>
@@ -947,13 +970,6 @@
 			<string>libPods.a</string>
 			<key>sourceTree</key>
 			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>97272FC6B6424F0DB58A0F1A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>8F857044133D401EB967D560</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>A59F597BF554FB65A018DDD3</key>
 		<dict>
@@ -1168,7 +1184,7 @@
 			<key>shellPath</key>
 			<string>/bin/sh</string>
 			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh"
+			<string>"${SRCROOT}/Pods/Pods-resources.sh"
 </string>
 			<key>showEnvVarsInLog</key>
 			<string>0</string>

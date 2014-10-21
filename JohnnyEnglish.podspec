@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   
   s.name     = 'JohnnyEnglish'
-  s.version  = '0.0.1'
+  s.version  = '0.0.2'
   s.summary  = 'A light-weight AOP-based analytics binder'
   s.homepage = "https://github.com/ef-ctx/JohnnyEnglish"
   
@@ -9,7 +9,8 @@ Pod::Spec.new do |s|
 
   s.authors      = {
     "Dmitry Makarenko"   => "dmitry.makarenko@ef.com",
-    "Alberto De Bortoli" => "'alberto.debortoli@ef.com"
+    "Alberto De Bortoli" => "'alberto.debortoli@ef.com",
+    "Mário Barbosa" => "mario.araujo@ef.com"
   }
 
   s.dependency 'Aspects',     '~>1.4.1.1ctx'
@@ -20,6 +21,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   
   s.source   = { :git => 'git@github.com:ef-ctx/JohnnyEnglish.git', :tag => "#{s.version}" }
-  s.source_files = 'Sources/*.{h,m}', 'Sources/Trackers/*/*.{h,m}'
+  s.source_files = 'Sources/**/*.{h,m}'
   
 end

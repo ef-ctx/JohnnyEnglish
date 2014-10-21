@@ -8,9 +8,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CTXUserActivityEvent.h"
-#import "CTXUserActivityScreenHit.h"
-#import "CTXUserActivityTiming.h"
+
+@class CTXUserActivityEvent;
+@class CTXUserActivityScreenHit;
+@class CTXUserActivityTiming;
 
 @interface CTXMethodCallInfo : NSObject
 

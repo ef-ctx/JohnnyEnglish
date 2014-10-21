@@ -11,8 +11,7 @@
 #import "CTXMainViewController.h"
 #import "CTXJohnnyEnglishGoogleAnalyticsConfiguration.h"
 
-#import <JohnnyEnglish/CTXGATracker.h>
-#import <JohnnyEnglish/CTXUserActivityTrackingManager.h>
+#import <JohnnyEnglish/CTXJohnnyEnglish.h>
 
 @interface CTXAppDelegate()
 
