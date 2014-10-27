@@ -98,7 +98,7 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     NSParameterAssert(timing.interval);
     
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createTimingWithCategory:timing.category
-                                                                          interval:@([timing.interval floatValue]*1000)//sec to millisec
+                                                                          interval:@((int)([timing.interval floatValue]*1000))//sec to millisec
                                                                               name:timing.name
                                                                              label:timing.label];
     [self configureBuilder:builder withUserActivity:timing];
