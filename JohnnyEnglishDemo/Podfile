@@ -1,1 +1,4 @@
+source 'https://github.com/EFEducationFirstMobile/CTXCocoaPodsRepository'
+source 'https://github.com/CocoaPods/Specs.git'
+
 pod 'JohnnyEnglish', :path => '../'

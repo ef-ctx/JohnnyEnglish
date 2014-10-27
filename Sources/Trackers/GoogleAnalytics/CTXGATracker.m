@@ -15,7 +15,8 @@
 #import "CTXUserActivityTiming.h"
 #import "CTXUserActivityScreenHit.h"
 
-static NSUInteger const kTrackerDispatchInterval = 120;
+static NSUInteger const kTrackerDispatchIntervalDebug   = 10;
+static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 
 @interface CTXGATracker()
 
@@ -29,18 +30,34 @@ static NSUInteger const kTrackerDispatchInterval = 120;
 {
     if (self = [super init]) {
         [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
-        [[GAI sharedInstance] setDispatchInterval:kTrackerDispatchInterval];
+        [[GAI sharedInstance] setDispatchInterval:kTrackerDispatchIntervalRelease];
         
         self.tracker = [[GAI sharedInstance] trackerWithTrackingId:trackingId];
+        
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+        [self.tracker set:kGAIAppVersion value:version];
     }
     
     return self;
 }
 
+- (void)setSampleRate:(CGFloat)sampleRate
+{
+    CGFloat value = sampleRate;
+    value = MIN(value, 1);
+    value = MAX(value, 0);
+    
+    _sampleRate = value;
+    
+    [self.tracker set:kGAISampleRate value:[@(value*100) stringValue]];
+}
+
+
 - (void)setDebugMode:(BOOL)value
 {
     _debugMode = value;
     
+    [[GAI sharedInstance] setDispatchInterval: value ? kTrackerDispatchIntervalDebug : kTrackerDispatchIntervalRelease];
     [[GAI sharedInstance].logger setLogLevel:value ? kGAILogLevelVerbose : kGAILogLevelError];
 }
 
@@ -81,7 +98,7 @@ static NSUInteger const kTrackerDispatchInterval = 120;
     NSParameterAssert(timing.interval);
     
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createTimingWithCategory:timing.category
-                                                                          interval:timing.interval
+                                                                          interval:@([timing.interval floatValue]*1000)//sec to millisec
                                                                               name:timing.name
                                                                              label:timing.label];
     [self configureBuilder:builder withUserActivity:timing];

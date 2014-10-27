@@ -12,6 +12,7 @@
 @interface CTXGATracker : NSObject<CTXUserActivityTrackerProtocol>
 
 @property (assign, nonatomic) BOOL debugMode;
+@property (assign, nonatomic) CGFloat sampleRate;//[0-1]
 
 - (id)initWithTrackingId:(NSString *)trackingId;
 

@@ -130,6 +130,7 @@
     
     CTXGATracker *tracker = [[CTXGATracker alloc] initWithTrackingId:CTXJohnnyEnglishGoogleAnalyticsConfigurationTrackingID];
     tracker.debugMode = YES;
+    tracker.sampleRate = 1.0;
     
     [self.trackingManager registerTracker:tracker];
 }
