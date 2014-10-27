@@ -81,13 +81,15 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(clazz);
     NSParameterAssert(selektor);
     NSParameterAssert(userIdCallback);
+    
+    __weak typeof(self) weakSelf = self;
 
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> info) {
                         NSString *userId = userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
                         dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackUserId:userId];
                             }
                         });
@@ -112,6 +114,8 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(clazz);
     NSParameterAssert(screenCallback);
 
+    __weak typeof(self) weakSelf = self;
+    
     [clazz aspect_hookSelector:@selector(viewDidAppear:)
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> info) {
@@ -121,7 +125,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             return;
                         }
                         dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackScreenHit:screenHit];
                             }
                         });
@@ -135,6 +139,8 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(selektor);
     NSParameterAssert(event);
 
+    __weak typeof(self) weakSelf = self;
+    
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
@@ -142,7 +148,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             return;
                         }
                         dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackEvent:event];
                             }
                         });
@@ -155,6 +161,8 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(clazz);
     NSParameterAssert(selektor);
     NSParameterAssert(eventCallback);
+    
+    __weak typeof(self) weakSelf = self;
 
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
@@ -165,7 +173,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                             return;
                         }
                         dispatch_async(_workingQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackEvent:event];
                             }
                         });
@@ -179,6 +187,8 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(selektor);
     NSParameterAssert(uuidCallback);
 
+    __weak typeof(self) weakSelf = self;
+    
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
@@ -186,7 +196,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                         NSString *uuid = uuidCallback(invocation);
                         
                         dispatch_async(_workingQueue, ^{
-                            self.timerTrackers[uuid] = @{CTXTrackTimerStartDate:[NSDate new], CTXTrackTimerStartMethodInfo:invocation} ;
+                            weakSelf.timerTrackers[uuid] = @{CTXTrackTimerStartDate:[NSDate new], CTXTrackTimerStartMethodInfo:invocation} ;
                         });
                     }
                          error:error];
@@ -202,12 +212,14 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(selektor);
     NSParameterAssert(uuidCallback);
     NSParameterAssert(eventCallback);
+    
+    __weak typeof(self) weakSelf = self;
 
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionBefore
                     usingBlock:^(id<AspectInfo> info) {
                         NSString *uuid = uuidCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
-                        NSDictionary *startInfo = self.timerTrackers[uuid];
+                        NSDictionary *startInfo = weakSelf.timerTrackers[uuid];
                         [self.timerTrackers removeObjectForKey:uuid];
                         
                         if (!startInfo) {
@@ -223,7 +235,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                         }
                         dispatch_async(_workingQueue, ^{
                             
-                            for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackTiming:timing];
                             }
                         });
