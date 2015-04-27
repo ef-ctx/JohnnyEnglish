@@ -123,11 +123,19 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     }
     
     [userActivity.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customDimensionForIndex:[key integerValue]] value:obj];//TODO: check if key is really a number
+		if ([key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
+			[self.tracker set:[GAIFields customDimensionForIndex:[key integerValue]] value:obj];
+		} else {
+			NSLog(@"[CTXGATracker] Fail to track custom dimension with invalid index:%@ with value:%@", key, obj);
+		}
     }];
     
     [userActivity.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customMetricForIndex:[key integerValue]] value:obj];//TODO: check if key is really a number
+		if ([key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
+			[self.tracker set:[GAIFields customMetricForIndex:[key integerValue]] value:obj];
+		} else {
+			NSLog(@"[CTXGATracker] Fail to track custom metric with invalid index:%@ with value:%@", key, obj);
+		}
     }];
 }
 
