@@ -123,11 +123,11 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     }
     
     [userActivity.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customDimensionForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
+        [self.tracker set:[GAIFields customDimensionForIndex:[key integerValue]] value:obj];//TODO: check if key is really a number
     }];
     
     [userActivity.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-        [self.tracker set:[GAIFields customMetricForIndex:[obj integerValue]] value:key];//TODO: check if key is really a number
+        [self.tracker set:[GAIFields customMetricForIndex:[key integerValue]] value:obj];//TODO: check if key is really a number
     }];
 }
 
