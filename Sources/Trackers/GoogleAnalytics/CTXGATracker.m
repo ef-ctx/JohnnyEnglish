@@ -8,9 +8,9 @@
 
 #import "CTXGATracker.h"
 
-#import <GoogleAnalytics-iOS-SDK/GAI.h>
-#import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
-#import <GoogleAnalytics-iOS-SDK/GAIFields.h>
+#import <GoogleAnalytics/GAI.h>
+#import <GoogleAnalytics/GAIDictionaryBuilder.h>
+#import <GoogleAnalytics/GAIFields.h>
 #import "CTXUserActivityEvent.h"
 #import "CTXUserActivityTiming.h"
 #import "CTXUserActivityScreenHit.h"
