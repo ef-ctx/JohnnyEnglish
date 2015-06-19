@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   
   s.name     = 'JohnnyEnglish'
-  s.version  = '0.0.3'
+  s.version  = '0.0.4'
   s.summary  = 'A light-weight AOP-based analytics binder'
   s.homepage = "https://github.com/ef-ctx/JohnnyEnglish"
   
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   }
 
   s.dependency 'Aspects',     '~>1.4.1.1ctx'
-  s.dependency 'GoogleAnalytics-iOS-SDK', '~> 3.0'
+  s.dependency 'GoogleAnalytics'
 
   s.platform     = :ios
   s.ios.deployment_target = '7.0'
