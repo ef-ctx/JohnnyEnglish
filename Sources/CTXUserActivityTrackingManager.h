@@ -7,24 +7,15 @@
 //  Licensed under the MIT license.
 //
 
-#import <Foundation/Foundation.h>
+#import "CTXUserActivityTrackerProtocol.h"
 
 @class CTXUserActivityEvent;
 @class CTXUserActivityScreenHit;
 @class CTXUserActivityTiming;
 
-@interface CTXMethodCallInfo : NSObject
+@class CTXMethodCallInfo;
 
-@property (strong, nonatomic, readonly) id instance;
-@property (strong, nonatomic, readonly) NSInvocation * originalInvocation;
-@property (strong, nonatomic, readonly) NSArray * arguments;
-
-@end
-
-
-@protocol CTXUserActivityTrackerProtocol;
-
-@interface CTXUserActivityTrackingManager : NSObject
+@interface CTXUserActivityTrackingManager : NSObject <CTXUserActivityTrackerProtocol>
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 
@@ -46,5 +37,13 @@
                         stopSelector:(SEL)stopSelektor
                        eventCallback:(CTXUserActivityTiming * (^)(CTXMethodCallInfo *startMethodCallInfo, CTXMethodCallInfo *stopMethodCallInfo, NSTimeInterval duration))eventCallback
                                error:(NSError **)error;
+
+@end
+
+@interface CTXMethodCallInfo : NSObject
+
+@property (strong, nonatomic, readonly) id instance;
+@property (strong, nonatomic, readonly) NSInvocation * originalInvocation;
+@property (strong, nonatomic, readonly) NSArray * arguments;
 
 @end

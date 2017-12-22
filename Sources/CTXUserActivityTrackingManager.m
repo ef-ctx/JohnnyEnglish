@@ -17,32 +17,16 @@
 
 #import "Aspects.h"
 
-static NSString *const CTXTrackTimerStartDate           = @"startTimer";
-static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
+static NSString *const CTXTrackTimerStartDate       = @"startTimer";
+static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
-@interface CTXMethodCallInfo()
+@interface CTXMethodCallInfo ()
+
 @property (strong, nonatomic) id<AspectInfo> info;
-@end
-
-@implementation CTXMethodCallInfo
 
 - (instancetype)initWithAspectInfo:(id<AspectInfo>)info;
-{
-    if (self = [super init]) {
-        _info = info;
-        _instance = [info instance];
-        _originalInvocation = [info originalInvocation];
-    }
-    return self;
-}
-
-- (NSArray *)arguments
-{
-    return [self.info arguments];
-}
 
 @end
-
 
 @interface CTXUserActivityTrackingManager ()
 
@@ -83,7 +67,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
     NSParameterAssert(userIdCallback);
     
     __weak typeof(self) weakSelf = self;
-
+    
     [clazz aspect_hookSelector:selektor
                    withOptions:AspectPositionAfter
                     usingBlock:^(id<AspectInfo> info) {
@@ -93,8 +77,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                                 [tracker trackUserId:userId];
                             }
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerScreenTrackerFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError **)error
@@ -129,8 +112,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                                 [tracker trackScreenHit:screenHit];
                             }
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor event:(CTXUserActivityEvent *)event error:(NSError **)error
@@ -152,8 +134,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                                 [tracker trackEvent:event];
                             }
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerEventTrackerFromClass:(Class)clazz selector:(SEL)selektor eventCallback:(CTXUserActivityEvent * (^)(CTXMethodCallInfo *callInfo))eventCallback error:(NSError **)error
@@ -177,8 +158,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                                 [tracker trackEvent:event];
                             }
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerStartTimerTrackerFromClass:(Class)clazz selector:(SEL)selektor timerUUIDCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))uuidCallback error:(NSError **)error
@@ -198,8 +178,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                         dispatch_async(_workingQueue, ^{
                             weakSelf.timerTrackers[uuid] = @{CTXTrackTimerStartDate:[NSDate new], CTXTrackTimerStartMethodInfo:invocation} ;
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerStopTimerTrackerFromClass:(Class)clazz
@@ -239,8 +218,7 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                                 [tracker trackTiming:timing];
                             }
                         });
-                    }
-                         error:error];
+                    } error:error];
 }
 
 - (void)registerTimeTrackerFromClass:(Class)clazz
@@ -271,6 +249,63 @@ static NSString *const CTXTrackTimerStartMethodInfo     = @"startMethodInfo";
                           timerUUIDCallback:timerCallback
                               eventCallback:eventCallback
                                       error:error];
+}
+
+#pragma mark - CTXUserActivityTrackerProtocol
+
+- (void)trackUserId:(NSString *)userId
+{
+    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+        if([tracker respondsToSelector:@selector(trackUserId:)]) {
+            [tracker trackUserId:userId];
+        }
+    }
+}
+
+- (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit
+{
+    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+        if([tracker respondsToSelector:@selector(trackScreenHit:)]) {
+            [tracker trackScreenHit:screenHit];
+        }
+    }
+}
+
+- (void)trackEvent:(CTXUserActivityEvent *)event
+{
+    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+        if([tracker respondsToSelector:@selector(trackEvent:)]) {
+            [tracker trackEvent:event];
+        }
+    }
+}
+
+- (void)trackTiming:(CTXUserActivityTiming *)timing
+{
+    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+        if([tracker respondsToSelector:@selector(trackTiming:)]) {
+            [tracker trackTiming:timing];
+        }
+    }
+}
+
+@end
+
+@implementation CTXMethodCallInfo
+
+- (instancetype)initWithAspectInfo:(id<AspectInfo>)info;
+{
+    if (self = [super init]) {
+        _info = info;
+        _instance = [info instance];
+        _originalInvocation = [info originalInvocation];
+    }
+    return self;
+}
+
+- (NSArray *)arguments
+{
+    return [self.info arguments];
 }
 
 @end
