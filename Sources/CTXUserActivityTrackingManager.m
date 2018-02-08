@@ -224,7 +224,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         
                         NSString *uuid = uuidCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
                         NSDictionary *startInfo = weakSelf.timerTrackers[uuid];
-                        [self.timerTrackers removeObjectForKey:uuid];
+                        [weakSelf.timerTrackers removeObjectForKey:uuid];
                         
                         if (!startInfo) {
                             NSLog(@"WARNING: [%@] Stop timer without a proper start with uuid %@", NSStringFromSelector(_cmd), uuid);
