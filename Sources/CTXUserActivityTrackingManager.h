@@ -17,6 +17,10 @@
 
 @interface CTXUserActivityTrackingManager : NSObject <CTXUserActivityTrackerProtocol>
 
+@property (strong, nonatomic, readonly) NSMutableDictionary *globalDimensions;
+@property (strong, nonatomic, readonly) NSMutableDictionary *globalMetrics;
+
+
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 
 - (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))userIdCallback error:(NSError **)error;

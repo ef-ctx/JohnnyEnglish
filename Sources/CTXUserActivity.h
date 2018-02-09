@@ -21,7 +21,4 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic, readonly) NSMutableDictionary *customMetrics;
 @property (assign, nonatomic) CTXUserActivitySessionControl sessionControl;
 
-- (void)setCustomDimension:(NSString *)dimension withValue:(NSString *)value;
-- (void)setCustomMetric:(NSString *)dimension withValue:(NSString *)value;
-
 @end

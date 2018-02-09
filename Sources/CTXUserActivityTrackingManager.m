@@ -32,6 +32,8 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 @property (nonatomic, strong) NSMutableArray *trackers;
 @property (nonatomic, strong) NSMutableDictionary *timerTrackers;
+@property (nonatomic, strong) NSMutableDictionary *globalDimensions;
+@property (nonatomic, strong) NSMutableDictionary *globalMetrics;
 
 @property (nonatomic, strong) dispatch_queue_t workQueue;
 
@@ -44,6 +46,8 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
     if (self = [super init]) {
         _trackers = [NSMutableArray array];
         _timerTrackers = [NSMutableDictionary dictionary];
+        _globalDimensions = [NSMutableDictionary dictionary];
+        _globalMetrics = [NSMutableDictionary dictionary];
         _workQueue = dispatch_queue_create("com.ef.ctx.user-activity-tracking-manager", DISPATCH_QUEUE_CONCURRENT);
     }
     
@@ -115,6 +119,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                             return;
                         }
                         
+                        [screenHit.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
+                        [screenHit.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
+                        
                         dispatch_async(weakSelf.workQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackScreenHit:screenHit];
@@ -141,6 +148,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         if (!event) {
                             return;
                         }
+                        
+                        [event.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
+                        [event.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
                         dispatch_async(weakSelf.workQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
@@ -169,6 +179,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         if (!event) {
                             return;
                         }
+                        
+                        [event.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
+                        [event.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
                         dispatch_async(weakSelf.workQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
@@ -238,6 +251,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                             return;
                         }
                         
+                        [timing.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
+                        [timing.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
+                        
                         dispatch_async(weakSelf.workQueue, ^{
                             for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
                                 [tracker trackTiming:timing];
@@ -289,6 +305,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit
 {
+    [screenHit.customDimensions addEntriesFromDictionary:self.globalDimensions];
+    [screenHit.customMetrics addEntriesFromDictionary:self.globalMetrics];
+    
     for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
         if([tracker respondsToSelector:@selector(trackScreenHit:)]) {
             [tracker trackScreenHit:screenHit];
@@ -298,6 +317,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 - (void)trackEvent:(CTXUserActivityEvent *)event
 {
+    [event.customDimensions addEntriesFromDictionary:self.globalDimensions];
+    [event.customMetrics addEntriesFromDictionary:self.globalMetrics];
+    
     for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
         if([tracker respondsToSelector:@selector(trackEvent:)]) {
             [tracker trackEvent:event];
@@ -307,6 +329,9 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 - (void)trackTiming:(CTXUserActivityTiming *)timing
 {
+    [timing.customDimensions addEntriesFromDictionary:self.globalDimensions];
+    [timing.customMetrics addEntriesFromDictionary:self.globalMetrics];
+    
     for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
         if([tracker respondsToSelector:@selector(trackTiming:)]) {
             [tracker trackTiming:timing];

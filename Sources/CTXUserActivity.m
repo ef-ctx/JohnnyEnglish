@@ -28,14 +28,4 @@
     return self;
 }
 
-- (void)setCustomDimension:(NSString *)dimension withValue:(NSString *)value
-{
-    [self.customDimensions setObject:value forKey:dimension];
-}
-
-- (void)setCustomMetric:(NSString *)metric withValue:(NSString *)value
-{
-    [self.customMetrics setObject:value forKey:metric];
-}
-
 @end
