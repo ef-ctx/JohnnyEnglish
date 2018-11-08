@@ -78,12 +78,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                             return;
                         }
                         
-                        NSString *userId = userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info]);
-                        dispatch_async(weakSelf.workQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-                                [tracker trackUserId:userId];
-                            }
-                        });
+                        [self trackUserId:userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info])];
                     } error:error];
 }
 
@@ -122,11 +117,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         [screenHit.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
                         [screenHit.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
-                        dispatch_async(weakSelf.workQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-                                [tracker trackScreenHit:screenHit];
-                            }
-                        });
+                        [self trackScreenHit:screenHit];
                     } error:error];
 }
 
@@ -152,11 +143,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         [event.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
                         [event.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
-                        dispatch_async(weakSelf.workQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-                                [tracker trackEvent:event];
-                            }
-                        });
+                        [weakSelf trackEvent:event];
                     } error:error];
 }
 
@@ -183,11 +170,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         [event.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
                         [event.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
-                        dispatch_async(weakSelf.workQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-                                [tracker trackEvent:event];
-                            }
-                        });
+                        [weakSelf trackEvent:event];
                     } error:error];
 }
 
@@ -254,11 +237,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                         [timing.customDimensions addEntriesFromDictionary:weakSelf.globalDimensions];
                         [timing.customMetrics addEntriesFromDictionary:weakSelf.globalMetrics];
                         
-                        dispatch_async(weakSelf.workQueue, ^{
-                            for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-                                [tracker trackTiming:timing];
-                            }
-                        });
+                        [weakSelf trackTiming:timing];
                     } error:error];
 }
 
@@ -296,11 +275,14 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 - (void)trackUserId:(NSString *)userId
 {
-    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-        if([tracker respondsToSelector:@selector(trackUserId:)]) {
-            [tracker trackUserId:userId];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(weakSelf.workQueue, ^{
+        for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+            if([tracker respondsToSelector:@selector(trackUserId:)]) {
+                [tracker trackUserId:userId];
+            }
         }
-    }
+    });
 }
 
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit
@@ -308,11 +290,14 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
     [screenHit.customDimensions addEntriesFromDictionary:self.globalDimensions];
     [screenHit.customMetrics addEntriesFromDictionary:self.globalMetrics];
     
-    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-        if([tracker respondsToSelector:@selector(trackScreenHit:)]) {
-            [tracker trackScreenHit:screenHit];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(weakSelf.workQueue, ^{
+        for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+            if([tracker respondsToSelector:@selector(trackScreenHit:)]) {
+                [tracker trackScreenHit:screenHit];
+            }
         }
-    }
+    });
 }
 
 - (void)trackEvent:(CTXUserActivityEvent *)event
@@ -320,11 +305,14 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
     [event.customDimensions addEntriesFromDictionary:self.globalDimensions];
     [event.customMetrics addEntriesFromDictionary:self.globalMetrics];
     
-    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-        if([tracker respondsToSelector:@selector(trackEvent:)]) {
-            [tracker trackEvent:event];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(weakSelf.workQueue, ^{
+        for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+            if([tracker respondsToSelector:@selector(trackEvent:)]) {
+                [tracker trackEvent:event];
+            }
         }
-    }
+    });
 }
 
 - (void)trackTiming:(CTXUserActivityTiming *)timing
@@ -332,11 +320,14 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
     [timing.customDimensions addEntriesFromDictionary:self.globalDimensions];
     [timing.customMetrics addEntriesFromDictionary:self.globalMetrics];
     
-    for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
-        if([tracker respondsToSelector:@selector(trackTiming:)]) {
-            [tracker trackTiming:timing];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(weakSelf.workQueue, ^{
+        for (id<CTXUserActivityTrackerProtocol> tracker in self.trackers) {
+            if([tracker respondsToSelector:@selector(trackTiming:)]) {
+                [tracker trackTiming:timing];
+            }
         }
-    }
+    });
 }
 
 @end
