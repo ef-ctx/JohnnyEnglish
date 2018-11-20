@@ -28,6 +28,11 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 
 - (instancetype)initWithTrackingId:(NSString *)trackingId
 {
+    return [self initWithTrackingId:trackingId debugMode:NO];
+}
+
+- (instancetype)initWithTrackingId:(NSString *)trackingId debugMode:(BOOL)debugMode
+{
     if (self = [super init]) {
         [[GAI sharedInstance] setTrackUncaughtExceptions:YES];
         [[GAI sharedInstance] setDispatchInterval:kTrackerDispatchIntervalRelease];
@@ -36,6 +41,11 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
         
         NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
         [self.tracker set:kGAIAppVersion value:version];
+        
+        [self setSampleRate:1.0f];
+        
+        [[GAI sharedInstance] setDispatchInterval: (debugMode ? kTrackerDispatchIntervalDebug : kTrackerDispatchIntervalRelease)];
+        [[GAI sharedInstance].logger setLogLevel:(debugMode ? kGAILogLevelVerbose : kGAILogLevelError)];
     }
     
     return self;
@@ -52,14 +62,6 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     [self.tracker set:kGAISampleRate value:[@(value*100) stringValue]];
 }
 
-
-- (void)setDebugMode:(BOOL)value
-{
-    _debugMode = value;
-    
-    [[GAI sharedInstance] setDispatchInterval: value ? kTrackerDispatchIntervalDebug : kTrackerDispatchIntervalRelease];
-    [[GAI sharedInstance].logger setLogLevel:value ? kGAILogLevelVerbose : kGAILogLevelError];
-}
 
 #pragma mark - CTXUserActivityTrackerProtocol Methods
 
