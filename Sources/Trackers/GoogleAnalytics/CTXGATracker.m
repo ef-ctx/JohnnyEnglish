@@ -14,6 +14,7 @@
 #import "CTXUserActivityEvent.h"
 #import "CTXUserActivityTiming.h"
 #import "CTXUserActivityScreenHit.h"
+#import "CTXCustomDefinitionKey.h"
 
 static NSUInteger const kTrackerDispatchIntervalDebug   = 10;
 static NSUInteger const kTrackerDispatchIntervalRelease = 120;
@@ -124,19 +125,19 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
             break;
     }
     
-    [userActivity.customDimensions enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-		if ([key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
-			[self.tracker set:[GAIFields customDimensionForIndex:[key integerValue]] value:obj];
+    [userActivity.customDimensions enumerateKeysAndObjectsUsingBlock:^(CTXCustomDefinitionKey *customKey, NSString *obj, BOOL *stop) {
+		if ([customKey.key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
+			[self.tracker set:[GAIFields customDimensionForIndex:[customKey.key integerValue]] value:obj];
 		} else {
-			NSLog(@"[CTXGATracker] Fail to track custom dimension with invalid index:%@ with value:%@", key, obj);
+			NSLog(@"[CTXGATracker] Fail to track custom dimension with invalid index:%@ with value:%@", customKey, obj);
 		}
     }];
     
-    [userActivity.customMetrics enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-		if ([key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
-			[self.tracker set:[GAIFields customMetricForIndex:[key integerValue]] value:obj];
+    [userActivity.customMetrics enumerateKeysAndObjectsUsingBlock:^(CTXCustomDefinitionKey *customKey, NSString *obj, BOOL *stop) {
+		if ([customKey.key integerValue] != 0) {//Custom index begin from 1, and invalid convertion will return 0
+			[self.tracker set:[GAIFields customMetricForIndex:[customKey.key integerValue]] value:obj];
 		} else {
-			NSLog(@"[CTXGATracker] Fail to track custom metric with invalid index:%@ with value:%@", key, obj);
+			NSLog(@"[CTXGATracker] Fail to track custom metric with invalid index:%@ with value:%@", customKey, obj);
 		}
     }];
 }

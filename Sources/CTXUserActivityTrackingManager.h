@@ -12,13 +12,14 @@
 @class CTXUserActivityEvent;
 @class CTXUserActivityScreenHit;
 @class CTXUserActivityTiming;
+@class CTXCustomDefinitionKey;
 
 @class CTXMethodCallInfo;
 
 @interface CTXUserActivityTrackingManager : NSObject <CTXUserActivityTrackerProtocol>
 
-@property (strong, nonatomic, readonly) NSMutableDictionary *globalDimensions;
-@property (strong, nonatomic, readonly) NSMutableDictionary *globalMetrics;
+@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id>  *globalDimensions;
+@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id> *globalMetrics;
 
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;

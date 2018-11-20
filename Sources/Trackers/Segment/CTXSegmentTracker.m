@@ -13,6 +13,8 @@
 #import "CTXUserActivityTiming.h"
 #import "CTXUserActivityScreenHit.h"
 
+#import "CTXCustomDefinitionKey.h"
+
 static NSUInteger const kTrackerDispatchIntervalDebug   = 10;
 static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 
@@ -59,8 +61,7 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     NSParameterAssert(screenHit.screenName);
     
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties addEntriesFromDictionary:screenHit.customDimensions];
-    [properties addEntriesFromDictionary:screenHit.customMetrics];
+    [self _appendCustomDefintionsFromActivity:screenHit toProperties:properties];
     
     [self.tracker screen:screenHit.screenName properties:properties];
 }
@@ -71,8 +72,7 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     NSParameterAssert(event.action);
     
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties addEntriesFromDictionary:event.customDimensions];
-    [properties addEntriesFromDictionary:event.customMetrics];
+    [self _appendCustomDefintionsFromActivity:event toProperties:properties];
     
     [properties setObject:event.category forKey:@"category"];
     [properties setObject:event.action forKey:@"action"];
@@ -94,8 +94,7 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     NSParameterAssert(timing.interval);
     
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-    [properties addEntriesFromDictionary:timing.customDimensions];
-    [properties addEntriesFromDictionary:timing.customMetrics];
+    [self _appendCustomDefintionsFromActivity:timing toProperties:properties];
     
     [properties setObject:timing.category forKey:@"category"];
     [properties setObject:timing.interval forKey:@"interval"];
@@ -109,6 +108,19 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
     }
     
     [self.tracker track:(timing.name.length ? timing.name : timing.category) properties:properties];
+}
+
+#pragma mark - Private
+
+- (void)_appendCustomDefintionsFromActivity:(CTXUserActivity *)activity toProperties:(NSMutableDictionary *)properties
+{
+    [activity.customDimensions enumerateKeysAndObjectsUsingBlock:^(CTXCustomDefinitionKey *customKey, NSString *obj, BOOL *stop) {
+        [properties setObject:obj forKey:customKey.name];
+    }];
+    
+    [activity.customMetrics enumerateKeysAndObjectsUsingBlock:^(CTXCustomDefinitionKey *customKey, NSString *obj, BOOL *stop) {
+        [properties setObject:obj forKey:customKey.name];
+    }];
 }
 
 @end

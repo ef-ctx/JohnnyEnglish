@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CTXCustomDefinitionKey;
+
 typedef enum : NSUInteger {
     CTXSessionControlNone,
     CTXSessionControlStart,
@@ -17,8 +19,8 @@ typedef enum : NSUInteger {
 
 @interface CTXUserActivity : NSObject
 
-@property (strong, nonatomic, readonly) NSMutableDictionary *customDimensions;
-@property (strong, nonatomic, readonly) NSMutableDictionary *customMetrics;
+@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id> *customDimensions;
+@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id> *customMetrics;
 @property (assign, nonatomic) CTXUserActivitySessionControl sessionControl;
 
 @end
