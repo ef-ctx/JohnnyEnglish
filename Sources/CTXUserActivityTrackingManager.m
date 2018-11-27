@@ -271,6 +271,44 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                                       error:error];
 }
 
+- (void)setGlobalDimension:(id)globalDimension forKey:(CTXCustomDefinitionKey *)key
+{
+    NSParameterAssert(globalDimension);
+    NSParameterAssert(key);
+    
+    dispatch_async(self.workQueue, ^{
+        [self.globalDimensions setObject:globalDimension forKey:key];
+    });
+}
+
+- (void)removeGlobalDimensionForKey:(CTXCustomDefinitionKey *)key
+{
+    NSParameterAssert(key);
+    
+    dispatch_async(self.workQueue, ^{
+        [self.globalDimensions removeObjectForKey:key];
+    });
+}
+
+- (void)setGlobalMetric:(id)globalMetric forKey:(CTXCustomDefinitionKey *)key
+{
+    NSParameterAssert(globalMetric);
+    NSParameterAssert(key);
+    
+    dispatch_async(self.workQueue, ^{
+        [self.globalMetrics setObject:globalMetric forKey:key];
+    });
+}
+
+- (void)removeGlobalMetricForKey:(CTXCustomDefinitionKey *)key
+{
+    NSParameterAssert(key);
+    
+    dispatch_async(self.workQueue, ^{
+        [self.globalMetrics removeObjectForKey:key];
+    });
+}
+
 #pragma mark - CTXUserActivityTrackerProtocol
 
 - (void)trackUserId:(NSString *)userId

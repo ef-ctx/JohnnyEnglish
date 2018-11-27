@@ -18,10 +18,6 @@
 
 @interface CTXUserActivityTrackingManager : NSObject <CTXUserActivityTrackerProtocol>
 
-@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id>  *globalDimensions;
-@property (strong, nonatomic, readonly) NSMutableDictionary<CTXCustomDefinitionKey *, id> *globalMetrics;
-
-
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 
 - (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))userIdCallback error:(NSError **)error;
@@ -42,6 +38,12 @@
                         stopSelector:(SEL)stopSelektor
                        eventCallback:(CTXUserActivityTiming * (^)(CTXMethodCallInfo *startMethodCallInfo, CTXMethodCallInfo *stopMethodCallInfo, NSTimeInterval duration))eventCallback
                                error:(NSError **)error;
+
+- (void)setGlobalDimension:(id)globalDimension forKey:(CTXCustomDefinitionKey *)key;
+- (void)removeGlobalDimensionForKey:(CTXCustomDefinitionKey *)key;
+
+- (void)setGlobalMetric:(id)globalMetric forKey:(CTXCustomDefinitionKey *)key;
+- (void)removeGlobalMetricForKey:(CTXCustomDefinitionKey *)key;
 
 @end
 
