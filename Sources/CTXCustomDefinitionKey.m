@@ -10,6 +10,10 @@
 
 @interface CTXCustomDefinitionKey ()
 
+@property (nonatomic, strong) NSString *name;
+
+@property (nonatomic, strong) NSString *key;
+
 @end
 
 @implementation CTXCustomDefinitionKey
@@ -29,7 +33,10 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] allocWithZone:zone] initWithName:self.name key:self.key];
+    CTXCustomDefinitionKey *copy = [[[self class] allocWithZone:zone] init];
+    [copy setName:self.name.copy];
+    [copy setKey:self.key.copy];
+    return copy;
 }
 
 @end

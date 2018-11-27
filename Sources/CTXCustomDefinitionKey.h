@@ -10,9 +10,9 @@
 
 @interface CTXCustomDefinitionKey : NSObject <NSCopying>
 
-@property (nonatomic, readonly, nonnull) NSString *name;
+@property (nonatomic, strong, readonly, nonnull) NSString *name;
 
-@property (nonatomic, readonly, nonnull) NSString *key;
+@property (nonatomic, strong, readonly, nonnull) NSString *key;
 
 - (nonnull instancetype)initWithName:(nonnull NSString *)name key:(nonnull NSString *)key;
 
