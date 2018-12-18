@@ -85,6 +85,8 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
         [properties setObject:event.value forKey:@"value"];
     }
     
+    [properties addEntriesFromDictionary:event.properties];
+    
     [self.tracker track:event.action properties:properties];
 }
 

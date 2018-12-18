@@ -14,5 +14,6 @@
 @property (nonatomic, copy) NSString *action;
 @property (nonatomic, copy) NSString *label;
 @property (nonatomic, copy) NSNumber *value;
+@property (nonatomic, copy) NSDictionary *properties;
 
 @end
