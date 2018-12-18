@@ -86,10 +86,27 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 {
     NSParameterAssert(event.category);
     NSParameterAssert(event.action);
+
+    NSString *label = event.label;
+    NSMutableDictionary *properties = event.properties.mutableCopy;
+    if(properties) {
+        
+        if(label.length) {
+            [properties setObject:label forKey:@"label"];
+        }
+        
+        NSError *error;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:properties options:0 error:&error];
+        if (jsonData) {
+            label = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        } else {
+            NSLog(@"Could not encode event properties with error %@", error);
+        }
+    }
     
     GAIDictionaryBuilder *builder = [GAIDictionaryBuilder createEventWithCategory:event.category
                                                                            action:event.action
-                                                                            label:event.label
+                                                                            label:label
                                                                             value:event.value];
     [self configureBuilder:builder withUserActivity:event];
     [self.tracker send:[builder build]];
