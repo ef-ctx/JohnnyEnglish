@@ -15,6 +15,8 @@
 
 #import "CTXCustomDefinitionKey.h"
 
+#import <Segment-Amplitude/SEGAmplitudeIntegrationFactory.h>
+
 static NSUInteger const kTrackerDispatchIntervalDebug   = 10;
 static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 
@@ -41,6 +43,7 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
         [configuration setTrackApplicationLifecycleEvents:YES];
         [configuration setTrackDeepLinks:YES];
         [configuration setFlushAt:(debugMode ? kTrackerDispatchIntervalDebug : kTrackerDispatchIntervalRelease)];
+        [configuration use:[SEGAmplitudeIntegrationFactory instance]];
         
         
         _tracker = [[SEGAnalytics alloc] initWithConfiguration:configuration];

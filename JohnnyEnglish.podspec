@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
   s.dependency 'Aspects', '~>1.4.2ctx'
   s.dependency 'GoogleAnalytics'
   s.dependency 'Analytics', '~> 3.0'
+  s.dependency 'Segment-Amplitude', '~> 2.0'
 
   s.platform     = :ios
   s.ios.deployment_target = '7.0'
