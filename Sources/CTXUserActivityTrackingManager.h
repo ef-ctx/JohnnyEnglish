@@ -12,6 +12,7 @@
 @class CTXUserActivityEvent;
 @class CTXUserActivityScreenHit;
 @class CTXUserActivityTiming;
+@class CTXUserActivityUser;
 @class CTXCustomDefinitionKey;
 
 @class CTXMethodCallInfo;
@@ -20,7 +21,7 @@
 
 - (void)registerTracker:(id<CTXUserActivityTrackerProtocol>)tracker;
 
-- (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))userIdCallback error:(NSError **)error;
+- (void)registerUserFromClass:(Class)clazz selector:(SEL)selektor userCallback:(CTXUserActivityUser * (^)(CTXMethodCallInfo *callInfo))userCallback error:(NSError **)error;
 
 - (void)registerScreenTrackerFromClass:(Class)clazz screenName:(NSString *)screenName error:(NSError **)error;
 - (void)registerScreenTrackerFromClass:(Class)clazz screenCallback:(CTXUserActivityScreenHit * (^)(CTXMethodCallInfo *callInfo))screenCallback error:(NSError **)error;

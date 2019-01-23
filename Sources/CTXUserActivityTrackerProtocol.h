@@ -12,13 +12,13 @@
 @class CTXUserActivityTiming;
 @class CTXUserActivityEvent;
 @class CTXUserActivityScreenHit;
+@class CTXUserActivityUser;
 
 @protocol CTXUserActivityTrackerProtocol <NSObject>
 
 @optional
 
-- (void)trackUserId:(NSString *)userId;
-
+- (void)trackUser:(CTXUserActivityUser *)user;
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit;
 - (void)trackEvent:(CTXUserActivityEvent *)event;
 - (void)trackTiming:(CTXUserActivityTiming *)timing;

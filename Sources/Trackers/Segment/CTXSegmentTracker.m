@@ -12,6 +12,7 @@
 #import "CTXUserActivityEvent.h"
 #import "CTXUserActivityTiming.h"
 #import "CTXUserActivityScreenHit.h"
+#import "CTXUserActivityUser.h"
 
 #import "CTXCustomDefinitionKey.h"
 
@@ -54,9 +55,9 @@ static NSUInteger const kTrackerDispatchIntervalRelease = 120;
 
 #pragma mark - CTXUserActivityTrackerProtocol Methods
 
-- (void)trackUserId:(NSString *)userId
+- (void)trackUser:(CTXUserActivityUser *)user
 {
-    [self.tracker identify:userId];
+    [self.tracker identify:user.identifier traits:user.traits];
 }
 
 - (void)trackScreenHit:(CTXUserActivityScreenHit *)screenHit

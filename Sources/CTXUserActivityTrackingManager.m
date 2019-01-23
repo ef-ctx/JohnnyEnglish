@@ -63,11 +63,11 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
     }
 }
 
-- (void)registerUserIdFromClass:(Class)clazz selector:(SEL)selektor userIdCallback:(NSString * (^)(CTXMethodCallInfo *callInfo))userIdCallback error:(NSError **)error
+- (void)registerUserFromClass:(Class)clazz selector:(SEL)selektor userCallback:(CTXUserActivityUser * (^)(CTXMethodCallInfo *callInfo))userCallback error:(NSError **)error
 {
     NSParameterAssert(clazz);
     NSParameterAssert(selektor);
-    NSParameterAssert(userIdCallback);
+    NSParameterAssert(userCallback);
     
     __weak typeof(self) weakSelf = self;
     [clazz aspect_hookSelector:selektor
@@ -78,7 +78,7 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
                             return;
                         }
                         
-                        [weakSelf trackUserId:userIdCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info])];
+                        [weakSelf trackUser:userCallback([[CTXMethodCallInfo alloc] initWithAspectInfo:info])];
                     } error:error];
 }
 
@@ -303,13 +303,13 @@ static NSString *const CTXTrackTimerStartMethodInfo = @"startMethodInfo";
 
 #pragma mark - CTXUserActivityTrackerProtocol
 
-- (void)trackUserId:(NSString *)userId
+- (void)trackUser:(CTXUserActivityUser *)user
 {
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.workQueue, ^{
         for (id<CTXUserActivityTrackerProtocol> tracker in weakSelf.trackers) {
-            if([tracker respondsToSelector:@selector(trackUserId:)]) {
-                [tracker trackUserId:userId];
+            if([tracker respondsToSelector:@selector(trackUser:)]) {
+                [tracker trackUser:user];
             }
         }
     });
